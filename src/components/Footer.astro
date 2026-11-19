@@ -1,0 +1,84 @@
+---
+import { negozio, mapsHref } from '../data/sito';
+const anno = new Date().getFullYear();
+const manca = 'da confermare';
+---
+<footer class="piede-sito">
+  <div class="piede-sito__cta">
+    <p class="etichetta">Hai visto qualcosa che ti piace?</p>
+    <div class="piede-sito__bottoni">
+      <a class="btn" href={negozio.telefono.href}>Chiamaci · {negozio.telefono.vista}</a>
+      <a class="btn btn--vuoto" href={`mailto:${negozio.email}`}>Scrivici</a>
+    </div>
+  </div>
+
+  <p class="piede-sito__nome" aria-hidden="true">Benny<br />Store</p>
+
+  <div class="piede-sito__griglia">
+    <div>
+      <h2 class="etichetta">Negozio</h2>
+      <address>
+        <a class="link" href={mapsHref} target="_blank" rel="noopener">{negozio.indirizzo.via}<br />{negozio.indirizzo.citta} ({negozio.indirizzo.provincia})<span class="sr-only"> (apre Google Maps in una nuova scheda)</span></a>
+      </address>
+    </div>
+    <div>
+      <h2 class="etichetta">Contatti</h2>
+      <p><a class="link" href={negozio.telefono.href}>{negozio.telefono.vista}</a><br />
+        <a class="link" href={`mailto:${negozio.email}`}>{negozio.email}</a></p>
+    </div>
+    <div>
+      <h2 class="etichetta">Dati societari</h2>
+      <p class="piede-sito__dati">
+        {negozio.ragioneSociale ?? <span class="da-confermare">Ragione sociale: {manca}</span>}<br />
+        P.IVA {negozio.piva}<br />
+        C.F. {negozio.codiceFiscale ?? <span class="da-confermare">{manca}</span>} · REA {negozio.rea ?? <span class="da-confermare">{manca}</span>}<br />
+        PEC {negozio.pec ?? <span class="da-confermare">{manca}</span>}
+      </p>
+    </div>
+    <div>
+      <h2 class="etichetta">Informazioni</h2>
+      <ul>
+        <li><a class="link" href="/privacy">Privacy</a></li>
+        <li><a class="link" href="/privacy#cookie">Cookie</a></li>
+        <li><button type="button" class="link piede-sito__pref" data-apri-preferenze>Preferenze cookie</button></li>
+        <li><a class="link" href="/termini">Note legali</a></li>
+        <li><a class="link" href="/accessibilita">Accessibilità</a></li>
+      </ul>
+    </div>
+  </div>
+  <p class="piede-sito__firma">© {anno} {negozio.nome} · {negozio.qualifica}</p>
+</footer>
+
+<style>
+  .piede-sito {
+    position: relative; overflow: hidden;
+    padding: clamp(4rem, 10vw, 8rem) var(--gutter) 2rem;
+    background: var(--sala); color: var(--avorio);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .piede-sito__cta { display: grid; gap: 1rem; justify-items: start; max-width: var(--max); margin: 0 auto; }
+  .piede-sito__cta .etichetta { color: var(--salvia); }
+  .piede-sito__bottoni { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .piede-sito__nome {
+    margin: clamp(2rem, 6vw, 4rem) 0;
+    font-size: clamp(5rem, 24vw, 26rem); font-weight: 900; line-height: 0.78;
+    letter-spacing: -0.06em; text-transform: uppercase;
+    color: transparent; -webkit-text-stroke: 1px rgba(244, 242, 236, 0.35);
+    background: linear-gradient(180deg, var(--avorio) 0 45%, transparent 45%);
+    -webkit-background-clip: text; background-clip: text;
+    user-select: none;
+  }
+  .piede-sito__griglia {
+    max-width: var(--max); margin: 0 auto;
+    display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2rem;
+    font-size: 0.9375rem; line-height: 1.7;
+  }
+  .piede-sito__griglia h2 { color: var(--nebbia); margin-bottom: 0.6rem; }
+  .piede-sito__griglia address { font-style: normal; }
+  .piede-sito__griglia ul { list-style: none; margin: 0; padding: 0; }
+  .piede-sito__pref { background: none; border: 0; padding: 0; cursor: pointer; font-size: inherit; }
+  .piede-sito__dati .da-confermare { font-size: 0.8125rem; }
+  .piede-sito__firma { max-width: var(--max); margin: 3rem auto 0; color: var(--nebbia); font-size: 0.8125rem; }
+  @media (max-width: 860px) { .piede-sito__griglia { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px) { .piede-sito__griglia { grid-template-columns: 1fr; } }
+</style>

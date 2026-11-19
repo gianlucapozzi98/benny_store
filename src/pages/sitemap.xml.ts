@@ -1,0 +1,9 @@
+import type { APIRoute } from 'astro';
+const pagine = ['/', '/privacy', '/termini', '/accessibilita'];
+export const GET: APIRoute = ({ site }) => {
+  const oggi = new Date().toISOString().slice(0, 10);
+  const url = pagine.map((p) => `  <url><loc>${new URL(p, site)}</loc><lastmod>${oggi}</lastmod></url>`).join('\n');
+  return new Response(`<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${url}\n</urlset>\n`, {
+    headers: { 'Content-Type': 'application/xml; charset=utf-8' },
+  });
+};

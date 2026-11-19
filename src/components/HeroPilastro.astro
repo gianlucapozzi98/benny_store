@@ -1,0 +1,340 @@
+---
+// HERO — "Il pilastro" (vedi CONCEPT.md)
+// Una colonna a cinque facce come il pilastro antracite al centro del negozio.
+// Ogni faccia è una foto vera di una delle cinque categorie del biglietto.
+import { Picture } from 'astro:assets';
+import { negozio } from '../data/sito';
+import grafiche from '../assets/foto/negozio-parete-grafiche.jpg';
+import classico from '../assets/foto/negozio-parete-classico-led.jpg';
+import pop from '../assets/foto/negozio-parete-pop-wow.jpg';
+import abbigliamento from '../assets/foto/negozio-abbigliamento.jpg';
+import vetrina from '../assets/foto/negozio-angolo-classico-vetrina.jpg';
+
+const facce = [
+  { id: 'opere', titolo: "Quadri d'autore", img: grafiche, pos: '50% 38%',
+    alt: 'Una parete del negozio con otto grafiche e collage colorati in cornici bianche, nere e argento' },
+  { id: 'classico-moderno', titolo: 'Classico moderno', img: classico, pos: '50% 45%',
+    alt: 'Parete di quadri figurativi e paesaggi in cornici dorate, sotto una luce rossa lungo il soffitto' },
+  { id: 'pop-art', titolo: 'Pop art', img: pop, pos: '45% 55%',
+    alt: 'Parete pop art del negozio con la scritta WOW! e piccoli ritratti dai colori accesi' },
+  { id: 'abbigliamento', titolo: 'Abbigliamento', img: abbigliamento, pos: '50% 55%',
+    alt: 'Il reparto abbigliamento: capi appesi su stender neri ai due lati della sala' },
+  { id: 'oggettistica', titolo: 'Oggettistica e idee regalo', img: vetrina, pos: '88% 72%',
+    alt: 'Una vetrina del negozio con un mappamondo, statuette e piccoli oggetti da regalo' },
+];
+---
+<section class="hero" data-hero aria-labelledby="hero-titolo">
+  <div class="hero__scena" data-scena>
+    <div class="hero__luci" aria-hidden="true">
+      <span class="cono cono--sx"></span>
+      <span class="cono cono--dx"></span>
+      <span class="pavimento"></span>
+    </div>
+
+    <div class="palco">
+      <h1 id="hero-titolo" class="nome nome--pieno" data-nome>
+        <span>Benny</span> <span>Store</span>
+      </h1>
+
+      <div class="pilastro" data-pilastro>
+        <ul class="prisma" data-prisma aria-label="Le cinque anime del negozio">
+          {facce.map((f, i) => (
+            <li class="faccia" style={`--i:${i}`} data-faccia={i}>
+              <a href={`#${f.id}`} class="faccia__link">
+                <Picture
+                  src={f.img}
+                  alt={f.alt}
+                  formats={['avif', 'webp']}
+                  widths={[240, 360, 480, 680]}
+                  sizes="(max-width: 860px) 56vw, 20vw"
+                  loading="eager"
+                  fetchpriority={i === 0 ? 'high' : 'low'}
+                  decoding="async"
+                  style={`object-position:${f.pos}`}
+                  class="faccia__foto"
+                />
+                <span class="faccia__targa">
+                  <span class="etichetta faccia__num">0{i + 1}</span>
+                  <span class="faccia__titolo">{f.titolo}</span>
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <span class="pilastro__ombra" aria-hidden="true"></span>
+      </div>
+
+      <p class="nome nome--contorno" aria-hidden="true" data-nome-contorno>
+        <span>Benny</span> <span>Store</span>
+      </p>
+    </div>
+
+    <div class="piede">
+      <div class="piede__testo">
+        <p class="etichetta piede__qualifica">{negozio.qualifica} · Cesano Boscone</p>
+        <p class="piede__motto">{negozio.motto[0]}<br />{negozio.motto[1]}</p>
+        <div class="piede__cta">
+          <a class="btn" href={negozio.telefono.href}>Chiamaci</a>
+          <a class="btn btn--vuoto" href="#visita">Vieni a trovarci</a>
+        </div>
+      </div>
+
+      <nav class="piede__stato" aria-label="Le cinque categorie">
+        <span class="piede__categoria" aria-hidden="true" data-categoria>{facce[0].titolo}</span>
+        <ol class="indice">
+          {facce.map((f, i) => (
+            <li><a href={`#${f.id}`} data-indice={i} aria-current={i === 0 ? 'true' : undefined}>
+              <span aria-hidden="true">0{i + 1}</span><span class="sr-only">{f.titolo}</span>
+            </a></li>
+          ))}
+        </ol>
+      </nav>
+
+      <button class="pausa" type="button" data-pausa aria-pressed="false">
+        <span class="pausa__icona" aria-hidden="true"></span>
+        <span data-pausa-testo>Pausa</span>
+        <span class="sr-only"> la rotazione del pilastro</span>
+      </button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero { position: relative; background: var(--sala); }
+
+  .hero__scena {
+    /* faccia alta 1,45 volte la larghezza: si legge come un pilastro, non come una scatola */
+    --H: clamp(300px, min(48svh, 34vw), 560px);
+    --W: calc(var(--H) / 1.45);
+    --apotema: calc(var(--W) * 0.6882); /* W / (2·tan 36°) */
+    position: relative;
+    height: 100vh; height: 100svh;
+    min-height: 34rem;
+    display: grid;
+    grid-template-rows: var(--nav-h) 1fr auto;
+    overflow: hidden;
+    isolation: isolate;
+    background:
+      radial-gradient(60% 55% at 50% 40%, #23242a 0%, var(--sala) 70%),
+      var(--sala);
+  }
+
+  /* ---------- luci ---------- */
+  .hero__luci { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+  .cono {
+    position: absolute; top: -4%; width: calc(var(--W) * 1.9); height: 92%;
+    left: 50%;
+    background: linear-gradient(180deg, rgba(255, 226, 186, 0.26), rgba(255, 214, 160, 0.06) 70%, transparent);
+    clip-path: polygon(46% 0, 54% 0, 100% 100%, 0 100%);
+    filter: blur(14px);
+    mix-blend-mode: screen;
+    animation: cono-acceso var(--dur-lenta) var(--ease-out) 0.85s both;
+  }
+  .cono--sx { transform: translateX(-62%) rotate(-7deg); transform-origin: 50% 0; }
+  .cono--dx { transform: translateX(-38%) rotate(7deg); transform-origin: 50% 0; animation-delay: 0.98s; }
+  .pavimento {
+    position: absolute; left: 50%; top: 50%;
+    width: calc(var(--W) * 3.6); height: calc(var(--W) * 0.9);
+    transform: translate(-50%, calc(var(--H) * 0.5 - 30%));
+    background: radial-gradient(closest-side, rgba(217, 154, 91, 0.30), rgba(217, 154, 91, 0.08) 55%, transparent);
+    animation: cono-acceso var(--dur-lenta) var(--ease-out) 1s both;
+  }
+  @keyframes cono-acceso { from { opacity: 0; } to { opacity: 1; } }
+
+  /* ---------- palco: nome dietro, pilastro, nome a contorno davanti ---------- */
+  .palco {
+    grid-row: 2;
+    position: relative; z-index: 1;
+    display: grid; place-items: center;
+    padding: 0 var(--gutter);
+  }
+  .palco > * { grid-area: 1 / 1; }
+
+  .nome {
+    width: 100%;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: var(--fs-gigante);
+    font-weight: 900;
+    line-height: 0.8;
+    letter-spacing: var(--track-stretto);
+    text-transform: uppercase;
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+  }
+  .nome--pieno { color: var(--avorio); z-index: 1; }
+  .nome--contorno {
+    z-index: 3;
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(244, 242, 236, 0.7);
+  }
+  .nome > span { display: block; }
+
+  /* ---------- il pilastro ---------- */
+  .pilastro {
+    z-index: 2;
+    position: relative;
+    width: var(--W); height: var(--H);
+    perspective: 1700px;
+    perspective-origin: 50% 35%;
+  }
+  .prisma {
+    list-style: none; margin: 0; padding: 0;
+    position: absolute; inset: 0;
+    transform-style: preserve-3d;
+    transform: translateZ(calc(var(--apotema) * -1)) rotateY(calc(var(--theta, 0) * -1deg));
+    will-change: transform;
+  }
+  .faccia {
+    position: absolute; inset: 0;
+    transform: rotateY(calc(var(--i) * 72deg)) translateZ(var(--apotema));
+    backface-visibility: hidden; -webkit-backface-visibility: hidden;
+    background: var(--parete);
+  }
+  .faccia__link {
+    position: absolute; inset: 0;
+    display: block; overflow: hidden;
+    text-decoration: none; color: var(--avorio);
+    outline-offset: -6px;
+  }
+  .faccia__link :global(picture), .faccia__link :global(img) {
+    width: 100%; height: 100%;
+  }
+  .faccia__link :global(img) {
+    object-fit: cover;
+    transition: transform var(--dur-media) var(--ease-out);
+  }
+  .faccia__link:hover :global(img) { transform: scale(1.03); }
+  /* ombra in base all'angolo (calcolata in JS) + luce del cursore */
+  .faccia__link::after {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(70% 50% at var(--lx, 50%) var(--ly, 20%), rgba(255, 230, 196, 0.16), transparent 70%),
+      linear-gradient(rgba(10, 10, 12, var(--ombra, 0)), rgba(10, 10, 12, var(--ombra, 0)));
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+    pointer-events: none;
+  }
+  .faccia__targa {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
+    display: grid; gap: 0.25rem;
+    padding: 2.5rem 0.9rem 0.85rem;
+    background: linear-gradient(transparent, rgba(10, 10, 12, 0.82));
+  }
+  .faccia__num { color: var(--salvia); font-size: 0.6875rem; }
+  .faccia__titolo {
+    font-size: clamp(0.8125rem, 0.7rem + 0.35vw, 1rem);
+    font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; line-height: 1.2;
+  }
+  .pilastro__ombra {
+    position: absolute; left: 50%; bottom: calc(var(--H) * -0.06);
+    width: 170%; height: 14%;
+    transform: translateX(-50%);
+    background: radial-gradient(closest-side, rgba(0, 0, 0, 0.7), transparent);
+    z-index: -1;
+  }
+
+  /* ---------- piede ---------- */
+  .piede {
+    grid-row: 3; position: relative; z-index: 4;
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 1.5rem;
+    padding: 0 var(--gutter) clamp(1.25rem, 3vh, 2.25rem);
+  }
+  .piede__qualifica { color: var(--salvia); margin-bottom: 0.6rem; }
+  .piede__motto { font-size: 1.125rem; line-height: 1.45; max-width: 30ch; margin-bottom: 1.1rem; }
+  .piede__cta { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+
+  .piede__stato {
+    display: grid; justify-items: center; gap: 0.35rem; text-align: center;
+    color: var(--nebbia);
+  }
+  .piede__categoria {
+    color: var(--avorio); font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; font-size: 0.9375rem;
+    min-width: 18ch;
+  }
+  .indice { list-style: none; margin: 0; padding: 0; display: flex; gap: 0.25rem; }
+  .indice a {
+    position: relative; display: grid; place-items: center; width: 2.75rem; height: 2.75rem;
+    font-size: var(--fs-etichetta); font-weight: 700; letter-spacing: 0.08em; text-decoration: none; color: var(--nebbia);
+    transition: color var(--dur-rapida) var(--ease-out);
+  }
+  .indice a::after {
+    content: ''; position: absolute; left: 25%; right: 25%; bottom: 0.4rem; height: 2px;
+    background: var(--led); transform: scaleX(0); transition: transform var(--dur-media) var(--ease-out);
+  }
+  .indice a:hover { color: var(--avorio); }
+  .indice a[aria-current='true'] { color: var(--avorio); }
+  .indice a[aria-current='true']::after { transform: scaleX(1); }
+
+  .pausa {
+    justify-self: end;
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    min-height: 2.75rem; padding: 0 1.1rem;
+    background: rgba(22, 23, 26, 0.55);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 999px;
+    font-size: var(--fs-etichetta); font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+    cursor: pointer;
+    transition: transform var(--dur-rapida) var(--ease-out), border-color var(--dur-rapida) var(--ease-out);
+  }
+  .pausa:hover { transform: scale(1.02); border-color: rgba(255, 255, 255, 0.5); }
+  .pausa:active { transform: scale(0.98); }
+  .pausa__icona { width: 10px; height: 12px; border-left: 3px solid currentColor; border-right: 3px solid currentColor; }
+  .pausa[aria-pressed='true'] .pausa__icona {
+    border: 0; width: 0; height: 0;
+    border-left: 10px solid currentColor; border-top: 6px solid transparent; border-bottom: 6px solid transparent;
+  }
+
+  /* ---------- mobile ---------- */
+  @media (max-width: 860px) {
+    .hero__scena { --W: min(50vw, 270px); --H: calc(var(--W) * 1.4); grid-template-rows: var(--nav-h) 1fr auto; }
+    .nome {
+      flex-direction: column; justify-content: space-between;
+      font-size: clamp(4.25rem, 24vw, 8rem);
+      height: calc(var(--H) + 1.5em);
+    }
+    .piede__qualifica { letter-spacing: 0.14em; }
+    .piede { grid-template-columns: 1fr auto; row-gap: 1rem; }
+    .piede__testo { grid-column: 1 / -1; }
+    .piede__stato { justify-items: start; text-align: left; }
+    .indice { margin-left: -0.75rem; }
+    .piede__motto { font-size: 1rem; margin-bottom: 0.9rem; }
+    .piede__qualifica { margin-bottom: 0.4rem; }
+  }
+  @media (max-width: 400px) {
+    .indice a { width: 2.25rem; }
+    .indice { margin-left: -0.5rem; }
+    .pausa { padding: 0 0.9rem; }
+    .piede__cta .btn { flex: 1 1 auto; padding: 0 0.85rem; font-size: 0.75rem; letter-spacing: 0.08em; }
+    .piede__qualifica { letter-spacing: 0.1em; font-size: 0.6875rem; }
+  }
+  @media (max-width: 860px) and (max-height: 760px) {
+    .piede__motto { display: none; }
+  }
+
+  /* ---------- reduced motion: niente 3D, le categorie sono card ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    .hero__scena { height: auto; min-height: 100svh; grid-template-rows: var(--nav-h) auto auto; row-gap: 2rem; }
+    .palco { display: block; padding-top: 2rem; }
+    .nome--contorno, .pilastro__ombra, .pausa, .piede__stato, .hero__luci { display: none; }
+    .nome { height: auto; margin-bottom: 2rem; }
+    .pilastro { width: 100%; max-width: var(--max); margin: 0 auto; height: auto; perspective: none; }
+    .prisma {
+      position: static; transform: none;
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.75rem;
+    }
+    .faccia { position: relative; transform: none; aspect-ratio: 3 / 4; }
+    .faccia__link::after { background: none; }
+    .piede { grid-template-columns: 1fr; padding-bottom: 3rem; }
+  }
+  @media (prefers-reduced-motion: reduce) and (max-width: 860px) {
+    .nome--pieno { display: block; white-space: normal; font-size: 22vw; }
+    .prisma { grid-template-columns: repeat(5, 62vw); overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 0.5rem; }
+    .faccia { scroll-snap-align: start; }
+  }
+</style>
+
+<script>
+  import { initPilastro } from '../scripts/pilastro';
+  initPilastro();
+</script>

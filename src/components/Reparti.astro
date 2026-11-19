@@ -1,0 +1,63 @@
+---
+// ABBIGLIAMENTO + OGGETTISTICA — due blocchi calmi, nessun effetto forte.
+import { Picture } from 'astro:assets';
+import { negozio } from '../data/sito';
+import abbigliamento from '../assets/foto/negozio-abbigliamento.jpg';
+import vetrina from '../assets/foto/negozio-angolo-classico-vetrina.jpg';
+---
+<section class="reparti sezione" aria-label="Abbigliamento e oggettistica">
+  <article class="reparto" id="abbigliamento" aria-labelledby="abb-tit">
+    <div class="reparto__foto" data-svela>
+      <Picture src={abbigliamento} formats={['avif', 'webp']} widths={[400, 640, 960]}
+        sizes="(max-width: 860px) 92vw, 40vw" loading="lazy" decoding="async"
+        alt="Il reparto abbigliamento: capi appesi su stender neri ai due lati della sala" />
+    </div>
+    <div class="reparto__testo" data-svela>
+      <p class="etichetta">04 · Abbigliamento</p>
+      <h2 id="abb-tit" class="reparto__titolo">Abbiglia&shy;mento</h2>
+      <p>Arte & abbigliamento, come dice il nostro biglietto: in fondo alla sala ci sono gli stender con giacche, maglie e accessori.</p>
+      <p>Il modo migliore per sceglierli è provarli: passa a trovarci.</p>
+      <a class="btn btn--vuoto" href="#visita">Vieni a provarli</a>
+    </div>
+  </article>
+
+  <article class="reparto reparto--inverso" id="oggettistica" aria-labelledby="ogg-tit">
+    <div class="reparto__foto" data-svela>
+      <Picture src={vetrina} formats={['avif', 'webp']} widths={[400, 640, 960]}
+        sizes="(max-width: 860px) 92vw, 40vw" loading="lazy" decoding="async"
+        style="object-position: 80% 70%"
+        alt="Un angolo del negozio con quadri in cornici dorate, un cavalletto e una vetrina con oggetti da regalo" />
+    </div>
+    <div class="reparto__testo" data-svela>
+      <p class="etichetta">05 · Oggettistica e idee regalo</p>
+      <h2 id="ogg-tit" class="reparto__titolo">Oggetti&shy;stica</h2>
+      <p>Benny Store acquista lotti e li rimette in vendita: per questo in vetrina trovi oggetti che difficilmente vedi altrove.</p>
+      <p>{negozio.motto[1]}</p>
+      <a class="btn btn--vuoto" href="#regali">Cerchi un regalo?</a>
+    </div>
+  </article>
+</section>
+
+<style>
+  .reparti { display: grid; gap: clamp(5rem, 12vw, 10rem); background: var(--sala); }
+  .reparto {
+    max-width: 72rem; margin: 0 auto; width: 100%;
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(2rem, 6vw, 6rem); align-items: center;
+  }
+  .reparto--inverso .reparto__foto { order: 2; }
+  .reparto__foto { overflow: hidden; aspect-ratio: 4 / 5; background: var(--parete); }
+  .reparto__foto :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform var(--dur-lenta) var(--ease-out); }
+  .reparto__foto:hover :global(img) { transform: scale(1.03); }
+  .reparto__testo { display: grid; gap: 1.1rem; justify-items: start; max-width: 32rem; }
+  .reparto__testo .etichetta { color: var(--salvia); }
+  .reparto__testo p:not(.etichetta) { color: #d2d1cc; }
+  .reparto__titolo {
+    font-size: clamp(2.5rem, 1rem + 5vw, 5.5rem); font-weight: 900; line-height: 0.9;
+    letter-spacing: var(--track-stretto); text-transform: uppercase; hyphens: manual;
+  }
+  @media (max-width: 860px) {
+    .reparto { grid-template-columns: 1fr; }
+    .reparto--inverso .reparto__foto { order: 0; }
+  }
+</style>

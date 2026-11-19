@@ -1,0 +1,26 @@
+---
+import Base from '../layouts/Base.astro';
+import { negozio } from '../data/sito';
+---
+<Base title="Pagina non trovata | Benny Store" description="La pagina che cerchi non c'è. Torna alla home di Benny Store o chiamaci." noindex>
+  <section class="vuota">
+    <p class="vuota__num" aria-hidden="true">404</p>
+    <h1>Questa parete è vuota.</h1>
+    <p>La pagina che cerchi non c'è, o è stata spostata. Le opere però sono ancora tutte appese.</p>
+    <div class="vuota__cta">
+      <a class="btn" href="/">Torna in galleria</a>
+      <a class="btn btn--vuoto" href={negozio.telefono.href}>Chiamaci</a>
+    </div>
+  </section>
+</Base>
+<style>
+  .vuota {
+    min-height: 100svh; display: grid; place-content: center; justify-items: center; gap: 1.25rem;
+    padding: var(--nav-h) var(--gutter); text-align: center;
+    background: radial-gradient(40% 50% at 50% 30%, rgba(255, 226, 186, 0.10), transparent 70%), var(--sala);
+  }
+  .vuota__num { font-size: clamp(7rem, 30vw, 20rem); font-weight: 900; line-height: 0.8; letter-spacing: -0.06em; color: transparent; -webkit-text-stroke: 1px rgba(244, 242, 236, 0.5); }
+  h1 { font-size: clamp(1.75rem, 1rem + 3vw, 3rem); font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em; }
+  .vuota > p:not(.vuota__num) { color: var(--nebbia); max-width: 40ch; }
+  .vuota__cta { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem; margin-top: 0.5rem; }
+</style>

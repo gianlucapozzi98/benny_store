@@ -1,0 +1,26 @@
+---
+import Pagina from '../layouts/Pagina.astro';
+import { negozio } from '../data/sito';
+---
+<Pagina title="Accessibilità | Benny Store" description="L'impegno di Benny Store per un sito accessibile a tutti, secondo le WCAG 2.2 livello AA." titolo="Accessibilità" aggiornato="18 novembre 2026">
+  <p>Vogliamo che questo sito si possa usare da tutti: con la tastiera, con un lettore di schermo, con lo zoom, su telefono e con le animazioni ridotte. Il riferimento è il livello AA delle linee guida WCAG 2.2.</p>
+
+  <h2>Cosa abbiamo fatto</h2>
+  <ul>
+    <li>Tutto si usa da tastiera, con il focus sempre visibile e un collegamento "Vai al contenuto".</li>
+    <li>Il pilastro che ruota nella pagina iniziale ha un pulsante Pausa, si ferma passandoci sopra o selezionando una faccia, e si ferma quando non è visibile.</li>
+    <li>Se nel sistema hai attivato "Riduci movimento", il sito non usa rotazioni, scorrimento morbido né effetti di comparsa: le categorie diventano schede ferme.</li>
+    <li>Ogni foto ha una descrizione di ciò che mostra; le immagini decorative sono ignorate dai lettori di schermo.</li>
+    <li>Testi e controlli rispettano il contrasto minimo AA; i pulsanti misurano almeno 44 pixel.</li>
+    <li>La pagina funziona da 360 pixel di larghezza e con lo zoom al 200%.</li>
+  </ul>
+
+  <h2>Limiti noti</h2>
+  <ul>
+    <li>Il "faretto" della sezione Le opere è un effetto visivo: le stesse opere sono raggiungibili e descritte anche senza usarlo.</li>
+    <li>La mappa di Google Maps è un servizio esterno e la sua accessibilità non dipende da noi. Indirizzo e link alle indicazioni sono sempre disponibili come testo.</li>
+  </ul>
+
+  <h2>Segnalaci un problema</h2>
+  <p>Se qualcosa non funziona per te, scrivici a <a href={`mailto:${negozio.email}?subject=${encodeURIComponent('Accessibilità del sito')}`}>{negozio.email}</a> o chiamaci al <a href={negozio.telefono.href}>{negozio.telefono.vista}</a>. Ti rispondiamo e, se serve, ti diamo le stesse informazioni in un altro modo.</p>
+</Pagina>

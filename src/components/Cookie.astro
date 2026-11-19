@@ -1,0 +1,113 @@
+---
+// Banner e preferenze cookie. Oggi il sito non usa cookie propri né statistiche:
+// l'unica terza parte è la mappa di Google, caricata solo dopo il consenso.
+---
+<div class="cookie" data-cookie hidden role="region" aria-label="Preferenze sui cookie">
+  <p class="cookie__testo">
+    Questo sito usa solo strumenti tecnici. La mappa di Google, che usa cookie di terze parti,
+    si carica solo se accetti. <a href="/privacy#cookie">Informativa</a>
+  </p>
+  <div class="cookie__azioni">
+    <button type="button" class="btn btn--piccolo btn--vuoto" data-cookie-azione="rifiuta">Rifiuta</button>
+    <button type="button" class="btn btn--piccolo btn--vuoto" data-cookie-azione="personalizza">Personalizza</button>
+    <button type="button" class="btn btn--piccolo" data-cookie-azione="accetta">Accetta</button>
+  </div>
+  <button type="button" class="cookie__chiudi" data-cookie-azione="rifiuta" aria-label="Chiudi e rifiuta i cookie non tecnici">×</button>
+</div>
+
+<dialog class="preferenze" data-preferenze aria-labelledby="pref-titolo">
+  <form method="dialog" class="preferenze__corpo">
+    <h2 id="pref-titolo" class="preferenze__titolo">Preferenze cookie</h2>
+    <fieldset>
+      <legend class="sr-only">Categorie</legend>
+      <label class="scelta">
+        <input type="checkbox" checked disabled />
+        <span><strong>Tecnici</strong> — sempre attivi. Ricordano questa scelta. Nessun dato a terzi.</span>
+      </label>
+      <label class="scelta">
+        <input type="checkbox" name="mappe" />
+        <span><strong>Mappe</strong> — mostra la mappa di Google Maps nella sezione "Vieni a trovarci". Google può impostare cookie.</span>
+      </label>
+      <label class="scelta">
+        <input type="checkbox" name="statistiche" disabled />
+        <span><strong>Statistiche</strong> — al momento nessuno strumento di statistica è attivo.</span>
+      </label>
+    </fieldset>
+    <div class="preferenze__azioni">
+      <button class="btn btn--piccolo btn--vuoto" value="rifiuta">Rifiuta tutto</button>
+      <button class="btn btn--piccolo" value="salva">Salva le scelte</button>
+    </div>
+  </form>
+</dialog>
+
+<style>
+  .cookie {
+    position: fixed; left: var(--gutter); right: var(--gutter); bottom: var(--gutter); z-index: 60;
+    max-width: 44rem; margin-left: auto;
+    display: grid; gap: 1rem;
+    padding: 1.25rem 3rem 1.25rem 1.25rem;
+    background: rgba(29, 30, 34, 0.9);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px;
+    font-size: 0.9375rem; line-height: 1.5;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+  }
+  .cookie[hidden] { display: none; }
+  .cookie a { color: var(--indaco-luce); }
+  .cookie__azioni { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  @media (max-width: 480px) {
+    .cookie { left: 0.75rem; right: 0.75rem; bottom: 0.75rem; padding: 1rem 2.75rem 1rem 1rem; font-size: 0.875rem; }
+    .cookie__azioni .btn { flex: 1 1 auto; padding: 0 0.7rem; letter-spacing: 0.06em; }
+  }
+  .cookie__chiudi {
+    position: absolute; top: 0.5rem; right: 0.5rem; width: 2.75rem; height: 2.75rem;
+    background: none; border: 0; font-size: 1.5rem; cursor: pointer; color: var(--nebbia);
+  }
+  .preferenze {
+    width: min(34rem, calc(100% - 2rem)); padding: 0;
+    background: var(--sala-2); color: var(--avorio);
+    border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 16px;
+  }
+  .preferenze::backdrop { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); }
+  .preferenze__corpo { padding: 1.5rem; display: grid; gap: 1.25rem; }
+  .preferenze__titolo { font-size: 1.25rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; }
+  .preferenze fieldset { border: 0; margin: 0; padding: 0; display: grid; gap: 0.9rem; }
+  .scelta { display: grid; grid-template-columns: auto 1fr; gap: 0.75rem; align-items: start; font-size: 0.9375rem; line-height: 1.5; }
+  .scelta input { width: 1.25rem; height: 1.25rem; margin-top: 0.15rem; accent-color: var(--indaco-luce); }
+  .preferenze__azioni { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 0.5rem; }
+</style>
+
+<script>
+  import { leggiConsenso, salvaConsenso } from '../scripts/consenso';
+  const banner = document.querySelector<HTMLElement>('[data-cookie]')!;
+  const dialogo = document.querySelector<HTMLDialogElement>('[data-preferenze]')!;
+  const form = dialogo.querySelector('form')!;
+  const mappe = form.querySelector<HTMLInputElement>('[name="mappe"]')!;
+
+  if (!leggiConsenso()) banner.hidden = false;
+
+  const apriPreferenze = () => {
+    mappe.checked = !!leggiConsenso()?.mappe;
+    dialogo.showModal();
+  };
+
+  banner.addEventListener('click', (e) => {
+    const azione = (e.target as HTMLElement).closest<HTMLElement>('[data-cookie-azione]')?.dataset.cookieAzione;
+    if (!azione) return;
+    if (azione === 'personalizza') return apriPreferenze();
+    salvaConsenso({ mappe: azione === 'accetta', statistiche: false });
+    banner.hidden = true;
+  });
+
+  dialogo.addEventListener('close', () => {
+    if (dialogo.returnValue === 'salva') salvaConsenso({ mappe: mappe.checked, statistiche: false });
+    else if (dialogo.returnValue === 'rifiuta') salvaConsenso({ mappe: false, statistiche: false });
+    else return;
+    banner.hidden = true;
+  });
+
+  // "Preferenze cookie" nel footer e "mostra mappa"
+  document.addEventListener('click', (e) => {
+    if ((e.target as HTMLElement).closest('[data-apri-preferenze]')) { e.preventDefault(); apriPreferenze(); }
+  });
+</script>

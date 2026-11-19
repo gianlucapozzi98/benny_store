@@ -1,0 +1,31 @@
+---
+import Pagina from '../layouts/Pagina.astro';
+import { negozio } from '../data/sito';
+const m = (t: string) => `<span class="da-confermare">${t}</span>`;
+---
+<Pagina title="Note legali | Benny Store" description="Informazioni legali su Benny Store e condizioni d'uso del sito." titolo="Note legali" aggiornato="18 novembre 2026">
+  <h2>Chi siamo</h2>
+  <p>
+    {negozio.nome} — <Fragment set:html={negozio.ragioneSociale ?? m('ragione sociale e forma giuridica da confermare')} /><br />
+    Sede: {negozio.indirizzo.via}, {negozio.indirizzo.citta} ({negozio.indirizzo.provincia})<br />
+    P.IVA {negozio.piva} · C.F. <Fragment set:html={negozio.codiceFiscale ?? m('da confermare')} /> · REA <Fragment set:html={negozio.rea ?? m('da confermare')} /><br />
+    PEC <Fragment set:html={negozio.pec ?? m('da confermare')} /> · Email <a href={`mailto:${negozio.email}`}>{negozio.email}</a> · Tel. <a href={negozio.telefono.href}>{negozio.telefono.vista}</a>
+  </p>
+
+  <h2>A cosa serve questo sito</h2>
+  <p>Il sito presenta il negozio e alcune delle opere e dei prodotti esposti. Non è un negozio online: non si possono fare ordini né pagamenti dal sito. Le foto mostrano pezzi presenti in negozio al momento dello scatto; la disponibilità va verificata contattandoci.</p>
+  <p>Se in futuro verrà attivata la vendita a distanza, queste note saranno integrate con le condizioni di vendita e le informazioni sul diritto di recesso previste dal Codice del consumo.</p>
+
+  <h2>Immagini e contenuti</h2>
+  <p>Le fotografie del negozio sono di {negozio.nome}. Le opere fotografate appartengono ai rispettivi autori, che ne conservano i diritti: le immagini sono pubblicate solo per mostrare i pezzi disponibili e non possono essere riprodotte o riutilizzate.</p>
+  <p>I testi del sito non possono essere copiati senza autorizzazione.</p>
+
+  <h2>Responsabilità</h2>
+  <p>Curiamo i contenuti con attenzione, ma possono contenere imprecisioni. Le informazioni su un'opera (autore, tecnica, provenienza) valgono solo se confermate da noi per iscritto.</p>
+
+  <h2>Link esterni</h2>
+  <p>Il sito contiene collegamenti a servizi di terzi (per esempio Google Maps), che hanno condizioni proprie.</p>
+
+  <h2>Legge applicabile</h2>
+  <p>Si applica la legge italiana.</p>
+</Pagina>

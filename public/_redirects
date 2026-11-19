@@ -1,0 +1,3 @@
+# Netlify / Cloudflare Pages. DA CONFERMARE: dominio definitivo e versione preferita (www o senza).
+# http → https è automatico su questi host.
+https://bennystore.example/*  https://www.bennystore.example/:splat  301!

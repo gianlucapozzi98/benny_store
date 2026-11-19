@@ -1,0 +1,42 @@
+---
+import Base from '../layouts/Base.astro';
+import HeroPilastro from '../components/HeroPilastro.astro';
+import Opere from '../components/Opere.astro';
+import Negozio from '../components/Negozio.astro';
+import Reparti from '../components/Reparti.astro';
+import Regali from '../components/Regali.astro';
+import Visita from '../components/Visita.astro';
+import { negozio } from '../data/sito';
+
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'Store',
+  name: negozio.nome,
+  description: 'Arte & abbigliamento: quadri d\'autore, classico moderno, pop art, abbigliamento, oggettistica e idee regalo.',
+  url: Astro.site?.href,
+  image: new URL('/og.jpg', Astro.site).href,
+  telephone: '+393501330118',
+  email: negozio.email,
+  vatID: 'IT' + negozio.piva,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: negozio.indirizzo.via,
+    addressLocality: negozio.indirizzo.citta,
+    addressRegion: negozio.indirizzo.provincia,
+    addressCountry: 'IT',
+  },
+};
+---
+<Base
+  title="Benny Store | Arte e abbigliamento a Cesano Boscone"
+  description="Quadri, pop art, abbigliamento e idee regalo in via delle Betulle 1/3 a Cesano Boscone. Vieni a scoprirli o chiamaci: +39 350 133 0118."
+  ingresso
+>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(ld)} />
+  <HeroPilastro />
+  <Opere />
+  <Negozio />
+  <Reparti />
+  <Regali />
+  <Visita />
+</Base>

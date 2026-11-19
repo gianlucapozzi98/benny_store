@@ -1,0 +1,131 @@
+---
+// VIENI A TROVARCI — indirizzo, contatti, mappa solo con consenso, FAQ vere.
+import { negozio, mapsHref } from '../data/sito';
+const ind = `${negozio.indirizzo.via}, ${negozio.indirizzo.citta} (${negozio.indirizzo.provincia})`;
+const embed = 'https://www.google.com/maps?output=embed&q=' + encodeURIComponent('Via delle Betulle 1/3, Cesano Boscone MI');
+
+// Solo domande con risposta certa. Orari, spedizioni, valutazioni: da chiedere al cliente.
+const faq = [
+  { d: 'Dove si trova Benny Store?', r: `In ${ind}.` },
+  { d: 'Cosa trovo in negozio?', r: "Quadri d'autore, classico moderno, pop art, abbigliamento, oggettistica e idee regalo. All'interno c'è una galleria con le opere." },
+  { d: "Come chiedo informazioni su un'opera?", r: `Chiamaci al ${negozio.telefono.vista}, scrivi a ${negozio.email} oppure passa in negozio.` },
+];
+const faqLd = {
+  '@context': 'https://schema.org', '@type': 'FAQPage',
+  mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.d, acceptedAnswer: { '@type': 'Answer', text: f.r } })),
+};
+---
+<section class="visita sezione chiaro pennellate" id="visita" aria-labelledby="visita-titolo">
+  <header class="sezione__testa" data-svela>
+    <p class="etichetta">Contatti</p>
+    <h2 id="visita-titolo" class="sezione__titolo">Vieni a<br />trovarci</h2>
+  </header>
+
+  <div class="visita__griglia">
+    <div class="visita__info" data-svela>
+      <dl>
+        <div><dt class="etichetta">Indirizzo</dt><dd><a class="link" href={mapsHref} target="_blank" rel="noopener">{negozio.indirizzo.via}<br />{negozio.indirizzo.citta} ({negozio.indirizzo.provincia})<span class="sr-only"> (apre Google Maps in una nuova scheda)</span></a></dd></div>
+        <div><dt class="etichetta">Telefono</dt><dd><a class="link" href={negozio.telefono.href}>{negozio.telefono.vista}</a></dd></div>
+        <div><dt class="etichetta">Email</dt><dd><a class="link" href={`mailto:${negozio.email}`}>{negozio.email}</a></dd></div>
+        <div><dt class="etichetta">Orari</dt><dd><span class="da-confermare">Orari da confermare</span><br /><small>Ti consigliamo di chiamare prima di passare.</small></dd></div>
+      </dl>
+      <div class="visita__cta">
+        <a class="btn btn--scuro" href={negozio.telefono.href}>Chiamaci</a>
+        <a class="btn btn--scuro btn--vuoto" href={mapsHref} target="_blank" rel="noopener">Indicazioni<span class="sr-only"> (Google Maps, nuova scheda)</span></a>
+      </div>
+    </div>
+
+    <div class="mappa" data-mappa data-src={embed} data-svela>
+      <div class="mappa__segnaposto" data-mappa-segnaposto>
+        <p class="mappa__indirizzo">{negozio.indirizzo.via}<br />{negozio.indirizzo.citta}</p>
+        <p>La mappa è di Google Maps, che usa cookie di terze parti. La carichiamo solo se lo scegli tu.</p>
+        <button type="button" class="btn btn--scuro btn--piccolo" data-mappa-carica>Accetta e mostra la mappa</button>
+        <button type="button" class="link mappa__pref" data-apri-preferenze>Preferenze cookie</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="faq" data-svela>
+    <h3 class="faq__titolo">Domande frequenti</h3>
+    {faq.map((f) => (
+      <details class="faq__voce">
+        <summary>{f.d}</summary>
+        <p>{f.r}</p>
+      </details>
+    ))}
+  </div>
+  <script type="application/ld+json" set:html={JSON.stringify(faqLd)} />
+</section>
+
+<style>
+  .visita__griglia {
+    max-width: var(--max); margin: 0 auto;
+    display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(2rem, 5vw, 5rem);
+  }
+  .visita dl { margin: 0; display: grid; gap: 1.5rem; }
+  .visita dt { color: var(--indaco); margin-bottom: 0.3rem; }
+  .visita dd { margin: 0; font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem); font-weight: 600; line-height: 1.4; }
+  .visita dd small { font-size: 0.9375rem; font-weight: 400; }
+  .visita__cta { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 2rem; }
+  .visita__cta .btn--vuoto { color: var(--inchiostro); }
+  .visita__cta .btn--vuoto:hover { color: var(--avorio); }
+
+  .mappa { position: relative; min-height: 24rem; border-radius: 16px; overflow: hidden; background: var(--parete); color: var(--avorio); }
+  .mappa :global(iframe) { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .mappa__segnaposto {
+    position: absolute; inset: 0; display: grid; align-content: center; justify-items: start; gap: 1rem;
+    padding: clamp(1.5rem, 4vw, 3rem);
+    background:
+      repeating-linear-gradient(0deg, transparent 0 46px, rgba(255,255,255,0.05) 46px 48px),
+      repeating-linear-gradient(90deg, transparent 0 46px, rgba(255,255,255,0.05) 46px 48px),
+      var(--parete);
+  }
+  .mappa__segnaposto p { max-width: 36ch; }
+  .mappa__indirizzo { font-size: clamp(1.5rem, 1rem + 2vw, 2.5rem); font-weight: 900; text-transform: uppercase; line-height: 1; }
+  .mappa .btn--scuro { --btn-bg: var(--avorio); --btn-fg: var(--inchiostro); }
+  .mappa__pref { background: none; border: 0; padding: 0.5rem 0; cursor: pointer; font-size: 0.875rem; }
+
+  .faq { max-width: var(--max); margin: clamp(4rem, 8vw, 6rem) auto 0; }
+  .faq__titolo { font-size: var(--fs-h3); font-weight: 900; text-transform: uppercase; margin-bottom: 1rem; }
+  .faq__voce { border-top: 1px solid rgba(22, 23, 26, 0.2); }
+  .faq__voce:last-child { border-bottom: 1px solid rgba(22, 23, 26, 0.2); }
+  .faq__voce summary {
+    display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+    min-height: 3.5rem; padding: 0.75rem 0; cursor: pointer; list-style: none;
+    font-weight: 700; font-size: 1.125rem;
+  }
+  .faq__voce summary::-webkit-details-marker { display: none; }
+  .faq__voce summary::after { content: '+'; font-size: 1.5rem; font-weight: 300; transition: transform var(--dur-rapida) var(--ease-out); }
+  .faq__voce[open] summary::after { transform: rotate(45deg); }
+  .faq__voce p { padding-bottom: 1.25rem; max-width: 64ch; }
+
+  @media (max-width: 860px) { .visita__griglia { grid-template-columns: 1fr; } }
+</style>
+
+<script>
+  import { leggiConsenso, salvaConsenso, type Consenso } from '../scripts/consenso';
+  const box = document.querySelector<HTMLElement>('[data-mappa]');
+  if (box) {
+    const carica = () => {
+      if (box.querySelector('iframe')) return;
+      const f = document.createElement('iframe');
+      f.src = box.dataset.src!;
+      f.title = 'Mappa: Benny Store, via delle Betulle 1/3, Cesano Boscone';
+      f.loading = 'lazy';
+      f.referrerPolicy = 'no-referrer-when-downgrade';
+      box.append(f);
+      box.querySelector<HTMLElement>('[data-mappa-segnaposto]')!.hidden = true;
+    };
+    const togli = () => {
+      box.querySelector('iframe')?.remove();
+      box.querySelector<HTMLElement>('[data-mappa-segnaposto]')!.hidden = false;
+    };
+    if (leggiConsenso()?.mappe) carica();
+    document.addEventListener('consenso', (e) => ((e as CustomEvent<Consenso>).detail.mappe ? carica() : togli()));
+    box.querySelector('[data-mappa-carica]')!.addEventListener('click', () => {
+      const c = leggiConsenso();
+      salvaConsenso({ mappe: true, statistiche: c?.statistiche ?? false });
+      document.querySelector<HTMLElement>('[data-cookie]')?.setAttribute('hidden', '');
+    });
+  }
+</script>

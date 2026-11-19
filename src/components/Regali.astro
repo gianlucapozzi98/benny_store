@@ -1,0 +1,212 @@
+---
+// IDEE REGALO — "Per chi è?" + "Per quale occasione?" → un messaggio pronto.
+// Nessun prezzo. Nessun invio dal sito: il messaggio parte dall'app di posta o al telefono.
+import { negozio } from '../data/sito';
+const persone = [
+  { v: 'lei', l: 'Per lei' }, { v: 'lui', l: 'Per lui' }, { v: 'casa', l: 'Per la casa' },
+  { v: 'amico', l: "Per un'amica o un amico" }, { v: 'me', l: 'Per me' },
+];
+const occasioni = [
+  { v: 'compleanno', l: 'Compleanno' }, { v: 'natale', l: 'Natale e feste' }, { v: 'anniversario', l: 'Anniversario' },
+  { v: 'casa-nuova', l: 'Casa nuova' }, { v: 'nessuna', l: 'Senza un motivo' },
+];
+---
+<section class="regali sezione" id="regali" aria-labelledby="regali-titolo" data-regali>
+  <header class="sezione__testa" data-svela>
+    <p class="etichetta">Idee regalo</p>
+    <h2 id="regali-titolo" class="sezione__titolo">Per chi è<br />il regalo?</h2>
+    <p class="sezione__intro">Due scelte e ti prepariamo il messaggio. Scrivici e ti aiutiamo a scegliere.</p>
+  </header>
+
+  <form class="selettore" novalidate data-selettore>
+    <fieldset class="gruppo">
+      <legend class="gruppo__titolo"><span>1</span> Per chi è?</legend>
+      <div class="cartellini">
+        {persone.map((p, i) => (
+          <label class="cartellino" style={`--d:${i}`}>
+            <input type="radio" name="persona" value={p.v} data-testo={p.l.toLowerCase()} />
+            <span>{p.l}</span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+
+    <fieldset class="gruppo">
+      <legend class="gruppo__titolo"><span>2</span> Per quale occasione?</legend>
+      <div class="cartellini">
+        {occasioni.map((o, i) => (
+          <label class="cartellino" style={`--d:${i}`}>
+            <input type="radio" name="occasione" value={o.v} />
+            <span>{o.l}</span>
+          </label>
+        ))}
+      </div>
+    </fieldset>
+
+    <div class="esito" data-esito>
+      <div class="esito__carta" data-carta>
+        <div class="esito__fronte" data-fronte>
+          <p class="etichetta">3 · Il tuo messaggio</p>
+          <p class="esito__attesa">Scegli per chi e l'occasione: qui comparirà un messaggio pronto da inviarci.</p>
+        </div>
+        <div class="esito__retro" data-retro hidden>
+          <p class="etichetta">3 · Da guardare in negozio</p>
+          <ul class="esito__categorie" data-categorie></ul>
+          <label class="esito__label" for="messaggio-regalo">Il tuo messaggio (puoi modificarlo)</label>
+          <textarea id="messaggio-regalo" name="messaggio" rows="5" data-messaggio></textarea>
+          <div class="esito__azioni">
+            <a class="btn btn--indaco" href={`mailto:${negozio.email}`} data-email>Scrivici via email</a>
+            <a class="btn btn--scuro btn--vuoto" href={negozio.telefono.href}>Chiamaci</a>
+            <button type="button" class="btn btn--scuro btn--vuoto" data-copia>Copia il testo</button>
+          </div>
+          <p class="esito__nota">
+            "Scrivici via email" apre la tua app di posta con il testo già pronto: il messaggio parte solo quando premi invia.
+            Il sito non salva né invia nulla. <a class="link" href="/privacy">Privacy</a>
+          </p>
+        </div>
+      </div>
+      <p class="esito__errore" data-errore role="alert"></p>
+      <p class="sr-only" aria-live="polite" data-annuncio></p>
+    </div>
+  </form>
+</section>
+
+<style>
+  .regali { background: var(--avorio); color: var(--inchiostro); }
+  .regali .sezione__intro { color: #46484d; }
+  .regali .etichetta { color: var(--indaco); }
+  .regali :focus-visible { outline-color: var(--indaco); }
+
+  .selettore {
+    max-width: var(--max); margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 4vw, 4rem);
+  }
+  .gruppo { border: 0; margin: 0; padding: 0; min-width: 0; }
+  .gruppo__titolo { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; font-weight: 800; font-size: 1.25rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  .gruppo__titolo span { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; background: var(--inchiostro); color: var(--avorio); font-size: 0.875rem; }
+
+  .cartellini { display: grid; gap: 0.6rem; perspective: 900px; }
+  .cartellino { position: relative; display: block; cursor: pointer; }
+  .cartellino input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+  .cartellino span {
+    display: flex; align-items: center; min-height: 3.5rem; padding: 0.75rem 1.25rem;
+    background: #fff; border: 1px solid rgba(22, 23, 26, 0.16); border-radius: 10px;
+    font-weight: 700; font-size: 1.0625rem;
+    transform-origin: 50% 0;
+    transition: transform var(--dur-media) var(--ease-out), background-color var(--dur-rapida) var(--ease-out),
+      color var(--dur-rapida) var(--ease-out), border-color var(--dur-rapida) var(--ease-out);
+  }
+  .cartellino:hover span { border-color: var(--inchiostro); transform: scale(1.02); }
+  .cartellino input:focus-visible + span { outline: 2px solid var(--indaco); outline-offset: 3px; }
+  .cartellino input:checked + span {
+    background: var(--inchiostro); color: var(--avorio); border-color: var(--inchiostro);
+    animation: sfoglia var(--dur-media) var(--ease-out);
+  }
+  .cartellino input:checked + span::after { content: '✓'; margin-left: auto; color: var(--salvia); }
+  @keyframes sfoglia { 0% { transform: rotateX(0); } 45% { transform: rotateX(-80deg); } 100% { transform: rotateX(0); } }
+
+  /* L'esito è un cartellino grande che si gira */
+  .esito { grid-column: 1 / -1; perspective: 1400px; }
+  .esito__carta { position: relative; display: grid; transform-style: preserve-3d; transition: transform var(--dur-lenta) var(--ease-out); }
+  .esito__carta.girata { transform: rotateY(180deg); }
+  .esito__fronte, .esito__retro {
+    grid-area: 1 / 1; display: grid; gap: 1rem; align-content: start;
+    padding: clamp(1.5rem, 4vw, 3rem); border-radius: 16px;
+    backface-visibility: hidden; -webkit-backface-visibility: hidden;
+  }
+  .esito__fronte { background: var(--salvia); min-height: 12rem; align-content: center; }
+  .esito__attesa { font-size: clamp(1.125rem, 1rem + 0.6vw, 1.5rem); font-weight: 300; max-width: 40ch; }
+  .esito__retro { background: #fff; border: 1px solid rgba(22, 23, 26, 0.12); transform: rotateY(180deg); }
+  .esito__retro[hidden] { display: none; }
+  .esito__categorie { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .esito__categorie :global(li) { padding: 0.5rem 1rem; border-radius: 999px; background: var(--salvia); font-weight: 700; font-size: 0.9375rem; }
+  .esito__label { font-weight: 700; font-size: 0.9375rem; }
+  .esito textarea {
+    width: 100%; padding: 1rem; font: inherit; font-size: 1rem; line-height: 1.5;
+    color: var(--inchiostro); background: #fbfaf7; border: 1px solid rgba(22, 23, 26, 0.3); border-radius: 10px; resize: vertical;
+  }
+  .esito textarea:focus-visible { outline: 2px solid var(--indaco); outline-offset: 2px; }
+  .esito__azioni { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .esito__azioni .btn--scuro.btn--vuoto { color: var(--inchiostro); }
+  .esito__azioni .btn--scuro.btn--vuoto:hover { color: var(--avorio); }
+  .esito__nota { font-size: 0.875rem; color: #46484d; max-width: 70ch; }
+  .esito__errore { color: #a1161d; font-weight: 700; margin-top: 0.75rem; }
+  .esito__errore:empty { display: none; }
+
+  @media (max-width: 860px) { .selettore { grid-template-columns: 1fr; } }
+  @media (prefers-reduced-motion: reduce) {
+    .esito__carta.girata { transform: none; }
+    .esito__retro { transform: none; }
+    .esito__carta.girata .esito__fronte { display: none; }
+  }
+</style>
+
+<script>
+  import { riduci } from '../scripts/movimento';
+  const CAT: Record<string, string[]> = {
+    lei: ['Pop art', 'Abbigliamento', 'Oggettistica e idee regalo'],
+    lui: ['Abbigliamento', "Quadri d'autore", 'Oggettistica e idee regalo'],
+    casa: ['Classico moderno', "Quadri d'autore", 'Oggettistica e idee regalo'],
+    amico: ['Pop art', 'Oggettistica e idee regalo', 'Abbigliamento'],
+    me: ["Quadri d'autore", 'Pop art', 'Classico moderno'],
+  };
+  const PRIMA: Record<string, string> = {
+    'casa-nuova': 'Classico moderno', anniversario: "Quadri d'autore", natale: 'Oggettistica e idee regalo',
+  };
+  const OCC: Record<string, string> = {
+    compleanno: 'un compleanno', natale: 'Natale e le feste', anniversario: 'un anniversario',
+    'casa-nuova': 'una casa nuova', nessuna: 'nessuna in particolare',
+  };
+
+  const form = document.querySelector<HTMLFormElement>('[data-selettore]');
+  if (form) {
+    const carta = form.querySelector<HTMLElement>('[data-carta]')!;
+    const fronte = form.querySelector<HTMLElement>('[data-fronte]')!;
+    const retro = form.querySelector<HTMLElement>('[data-retro]')!;
+    const lista = form.querySelector<HTMLElement>('[data-categorie]')!;
+    const msg = form.querySelector<HTMLTextAreaElement>('[data-messaggio]')!;
+    const email = form.querySelector<HTMLAnchorElement>('[data-email]')!;
+    const copia = form.querySelector<HTMLButtonElement>('[data-copia]')!;
+    const errore = form.querySelector<HTMLElement>('[data-errore]')!;
+    const annuncio = form.querySelector<HTMLElement>('[data-annuncio]')!;
+    const base = email.href.split('?')[0];
+    let modificato = false;
+
+    const aggiornaEmail = () => {
+      email.href = `${base}?subject=${encodeURIComponent('Idea regalo')}&body=${encodeURIComponent(msg.value)}`;
+    };
+
+    const aggiorna = () => {
+      const p = form.querySelector<HTMLInputElement>('[name="persona"]:checked');
+      const o = form.querySelector<HTMLInputElement>('[name="occasione"]:checked');
+      errore.textContent = '';
+      if (!p || !o) return;
+      const cat = [...new Set([PRIMA[o.value], ...CAT[p.value]].filter(Boolean))].slice(0, 3);
+      lista.innerHTML = '';
+      cat.forEach((c) => { const li = document.createElement('li'); li.textContent = c; lista.append(li); });
+      if (!modificato) {
+        msg.value = `Ciao Benny Store,\ncerco un regalo ${p.dataset.testo}. Occasione: ${OCC[o.value]}.\nMi piacerebbe vedere qualcosa tra: ${cat.join(', ')}.\nMi date qualche consiglio?\n\nGrazie!`;
+      }
+      aggiornaEmail();
+      if (retro.hidden) {
+        retro.hidden = false;
+        requestAnimationFrame(() => carta.classList.add('girata'));
+        fronte.setAttribute('aria-hidden', 'true');
+      }
+      annuncio.textContent = `Messaggio pronto. Da guardare in negozio: ${cat.join(', ')}.`;
+    };
+
+    form.addEventListener('change', (e) => { if ((e.target as HTMLElement).matches('[type="radio"]')) aggiorna(); });
+    msg.addEventListener('input', () => { modificato = true; aggiornaEmail(); });
+    email.addEventListener('click', (e) => {
+      if (!msg.value.trim()) { e.preventDefault(); errore.textContent = 'Scrivi qualche parola nel messaggio prima di inviarlo.'; msg.focus(); }
+    });
+    copia.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(msg.value); copia.textContent = 'Testo copiato'; }
+      catch { msg.select(); copia.textContent = 'Seleziona e copia'; }
+      setTimeout(() => { copia.textContent = 'Copia il testo'; }, 2200);
+    });
+    form.addEventListener('submit', (e) => e.preventDefault());
+    if (riduci()) carta.style.transition = 'none';
+  }
+</script>

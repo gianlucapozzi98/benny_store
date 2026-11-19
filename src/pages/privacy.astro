@@ -1,0 +1,54 @@
+---
+import Pagina from '../layouts/Pagina.astro';
+import { negozio } from '../data/sito';
+const m = (t: string) => `<span class="da-confermare">${t}</span>`;
+---
+<Pagina title="Privacy e cookie | Benny Store" description="Come Benny Store tratta i dati personali di chi visita il sito e lo contatta, e quali cookie usa." titolo="Privacy e cookie" aggiornato="18 novembre 2026">
+  <p>Questa informativa spiega, ai sensi degli artt. 13 e 14 del Regolamento (UE) 2016/679 ("GDPR"), come vengono trattati i dati personali di chi visita questo sito e di chi contatta il negozio.</p>
+
+  <h2>Titolare del trattamento</h2>
+  <p>
+    <Fragment set:html={negozio.ragioneSociale ?? m('Ragione sociale e forma giuridica: da confermare')} /><br />
+    {negozio.indirizzo.via}, {negozio.indirizzo.citta} ({negozio.indirizzo.provincia})<br />
+    P.IVA {negozio.piva}<br />
+    Email: <a href={`mailto:${negozio.email}`}>{negozio.email}</a> · Telefono: <a href={negozio.telefono.href}>{negozio.telefono.vista}</a><br />
+    PEC: <Fragment set:html={negozio.pec ?? m('da confermare')} />
+  </p>
+
+  <h2>Quali dati trattiamo</h2>
+  <h3>Dati di navigazione</h3>
+  <p>I server che ospitano il sito registrano, come avviene per qualsiasi sito, dati tecnici come indirizzo IP, data e ora della richiesta e pagina visitata. Servono a far funzionare il sito e a proteggerlo. Fornitore di hosting: <Fragment set:html={m('da confermare')} />. Conservazione: <Fragment set:html={m('secondo le impostazioni del fornitore, da confermare')} />.</p>
+  <h3>Dati che ci invii tu</h3>
+  <p>Il sito non ha moduli che inviano dati ai nostri server. Se ci chiami o ci scrivi (anche usando i messaggi precompilati delle sezioni "Le opere" e "Idee regalo", che aprono la tua app di posta), trattiamo i dati che ci comunichi: nome, indirizzo email o numero di telefono, contenuto del messaggio.</p>
+
+  <h2>Perché e su quale base</h2>
+  <ul>
+    <li>Rispondere alle tue richieste su opere, prodotti e visite in negozio: art. 6.1.b GDPR (misure precontrattuali richieste da te).</li>
+    <li>Sicurezza e funzionamento del sito: art. 6.1.f GDPR (legittimo interesse).</li>
+    <li>Mostrare la mappa di Google Maps: art. 6.1.a GDPR (tuo consenso, revocabile in ogni momento).</li>
+    <li>Adempiere a obblighi di legge (per esempio fiscali, se acquisti): art. 6.1.c GDPR.</li>
+  </ul>
+
+  <h2>Per quanto tempo</h2>
+  <p>Le email e i messaggi vengono conservati per il tempo necessario a gestire la richiesta e comunque non oltre <Fragment set:html={m('24 mesi — da confermare')} />, salvo obblighi di legge più lunghi.</p>
+
+  <h2>Chi può ricevere i dati</h2>
+  <p>Il fornitore di hosting, il fornitore del servizio email (<Fragment set:html={m('da confermare')} />) e, solo se accetti la mappa, Google Ireland Ltd. Nessun dato viene venduto o usato per pubblicità. Alcuni fornitori possono trattare dati fuori dall'UE con le garanzie previste dagli artt. 44 e seguenti del GDPR.</p>
+
+  <h2>I tuoi diritti</h2>
+  <p>Puoi chiedere accesso, rettifica, cancellazione, limitazione, portabilità dei dati e opporti al trattamento (artt. 15–22 GDPR), e revocare il consenso dato. Scrivi a <a href={`mailto:${negozio.email}`}>{negozio.email}</a>. Puoi anche presentare reclamo al Garante per la protezione dei dati personali (<a href="https://www.garanteprivacy.it" rel="noopener">garanteprivacy.it</a>).</p>
+
+  <h2 id="cookie">Cookie e strumenti simili</h2>
+  <p>Seguiamo le Linee guida del Garante sui cookie (10 giugno 2021). Nessuno strumento di terze parti si attiva prima della tua scelta.</p>
+  <div class="tabella">
+    <table>
+      <thead><tr><th>Nome</th><th>Tipo</th><th>Scopo</th><th>Durata</th></tr></thead>
+      <tbody>
+        <tr><td>bs-consenso (archivio locale del browser)</td><td>Tecnico</td><td>Ricordare la tua scelta sui cookie</td><td>6 mesi, poi la scelta viene richiesta</td></tr>
+        <tr><td>Google Maps</td><td>Terze parti, solo con consenso</td><td>Mostrare la mappa del negozio. Informativa di Google: <a href="https://policies.google.com/privacy?hl=it" rel="noopener">policies.google.com</a></td><td>Stabilita da Google</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Il sito non usa strumenti di statistica né di pubblicità. I caratteri tipografici sono ospitati sul nostro server, senza collegamenti a servizi esterni.</p>
+  <p>Puoi cambiare idea quando vuoi: <button type="button" class="link" data-apri-preferenze style="background:none;border:0;padding:0;color:var(--indaco-luce);cursor:pointer;font:inherit">apri le preferenze cookie</button>.</p>
+</Pagina>

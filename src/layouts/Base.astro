@@ -1,0 +1,64 @@
+---
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Ingresso from '../components/Ingresso.astro';
+import Footer from '../components/Footer.astro';
+import Cookie from '../components/Cookie.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  ingresso?: boolean;
+  noindex?: boolean;
+}
+const { title, description, ingresso = false, noindex = false } = Astro.props;
+const canonical = new URL(Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '/'), Astro.site);
+const og = new URL('/og.jpg', Astro.site);
+---
+<!doctype html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
+    <meta name="theme-color" content="#16171a" />
+    <script is:inline>document.documentElement.classList.add('js')</script>
+    <link rel="preload" href="/fonts/montserrat-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="it_IT" />
+    <meta property="og:site_name" content="Benny Store" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={og} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="La sala di Benny Store con quadri alle pareti antracite" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={og} />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="salta" href="#contenuto">Vai al contenuto</a>
+    {ingresso && <Ingresso />}
+    <Nav />
+    <main id="contenuto" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+    <Cookie />
+    <script>
+      import '../scripts/sito';
+    </script>
+  </body>
+</html>

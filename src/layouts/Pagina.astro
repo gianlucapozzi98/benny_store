@@ -1,0 +1,41 @@
+---
+import Base from './Base.astro';
+interface Props { title: string; description: string; titolo: string; aggiornato: string; bozza?: boolean }
+const { title, description, titolo, aggiornato, bozza = true } = Astro.props;
+---
+<Base title={title} description={description}>
+  <article class="pagina">
+    <header class="pagina__testa">
+      <p class="etichetta">Benny Store</p>
+      <h1>{titolo}</h1>
+      <p class="pagina__data">Ultimo aggiornamento: {aggiornato}</p>
+      {bozza && (
+        <p class="pagina__bozza" role="note">
+          <strong>Bozza da validare.</strong> Questo testo è una proposta: va controllato dal titolare
+          o da un consulente prima della pubblicazione. Le parti tratteggiate sono dati ancora da fornire.
+        </p>
+      )}
+    </header>
+    <div class="prosa"><slot /></div>
+  </article>
+</Base>
+
+<style>
+  .pagina { padding: calc(var(--nav-h) + clamp(3rem, 8vw, 6rem)) var(--gutter) clamp(4rem, 10vw, 8rem); }
+  .pagina__testa, .prosa { max-width: 46rem; margin: 0 auto; }
+  .pagina__testa { display: grid; gap: 1rem; margin-bottom: 3rem; }
+  .pagina__testa .etichetta { color: var(--salvia); }
+  h1 { font-size: clamp(2.5rem, 1rem + 6vw, 5.5rem); font-weight: 900; line-height: 0.9; letter-spacing: var(--track-stretto); text-transform: uppercase; }
+  .pagina__data { color: var(--nebbia); font-size: 0.9375rem; }
+  .pagina__bozza { padding: 1rem 1.25rem; border: 1px dashed var(--salvia); border-radius: 10px; font-size: 0.9375rem; color: var(--salvia); }
+  .prosa :global(h2) { font-size: 1.375rem; font-weight: 800; margin: 2.5rem 0 0.75rem; text-transform: uppercase; letter-spacing: 0.02em; }
+  .prosa :global(h3) { font-size: 1.125rem; font-weight: 700; margin: 1.5rem 0 0.5rem; }
+  .prosa :global(p), .prosa :global(li) { color: #d6d5d0; }
+  .prosa :global(p + p) { margin-top: 1rem; }
+  .prosa :global(ul) { padding-left: 1.25rem; }
+  .prosa :global(li + li) { margin-top: 0.4rem; }
+  .prosa :global(a) { color: var(--indaco-luce); text-underline-offset: 0.2em; }
+  .prosa :global(table) { width: 100%; border-collapse: collapse; font-size: 0.9375rem; margin-top: 1rem; }
+  .prosa :global(th), .prosa :global(td) { text-align: left; vertical-align: top; padding: 0.6rem 0.5rem; border-bottom: 1px solid rgba(255,255,255,0.12); }
+  .prosa :global(.tabella) { overflow-x: auto; }
+</style>

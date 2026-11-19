@@ -1,0 +1,189 @@
+---
+// DENTRO IL NEGOZIO — foto vera della sala con punti interattivi.
+// Ogni punto apre un dettaglio reale: una foto dedicata o l'ingrandimento della stessa sala.
+import { Picture, getImage } from 'astro:assets';
+import sala from '../assets/foto/negozio-sala-pilastro.jpg';
+import pop from '../assets/foto/negozio-parete-pop-wow.jpg';
+import classico from '../assets/foto/negozio-parete-classico-led.jpg';
+
+const lente = await getImage({ src: sala, width: 1400, format: 'webp' });
+
+const punti = [
+  { id: 'pop-art', titolo: 'Pop art', x: 21, y: 42, foto: pop,
+    alt: 'Parete pop art del negozio con la scritta WOW! e piccoli ritratti dai colori accesi',
+    testo: 'Ritratti pop, grafiche e tele dai colori accesi: è la parete della scritta WOW!.' },
+  { id: 'classico-moderno', titolo: 'Classico moderno', x: 17, y: 58, foto: classico,
+    alt: 'Parete di quadri figurativi e paesaggi in cornici dorate, sotto una luce rossa lungo il soffitto',
+    testo: "Paesaggi e figure in cornici dorate, appesi sotto la luce rossa che corre lungo il soffitto." },
+  { id: 'hs-abbigliamento', titolo: 'Abbigliamento', x: 90, y: 47, zoom: true, link: '#abbigliamento',
+    alt: 'Dettaglio della sala: gli stender del reparto abbigliamento sul fondo',
+    testo: "Tra un quadro e l'altro, l'abbigliamento: gli stender sono sul fondo della sala." },
+  { id: 'hs-oggettistica', titolo: 'Oggettistica e idee regalo', x: 80, y: 61, zoom: true, link: '#oggettistica',
+    alt: 'Dettaglio della sala: un tavolo vetrina con oggetti esposti',
+    testo: 'Vetrine e tavoli con oggetti da scoprire, per un regalo che non si trova altrove.' },
+];
+---
+<section class="negozio sezione chiaro pennellate" id="negozio" aria-labelledby="negozio-titolo" data-negozio>
+  <header class="sezione__testa" data-svela>
+    <p class="etichetta">Via delle Betulle 1/3 · Cesano Boscone</p>
+    <h2 id="negozio-titolo" class="sezione__titolo">Dentro<br />il negozio</h2>
+    <p class="sezione__intro">
+      Un negozio d'arte e non solo: all'interno c'è una galleria, e intorno abbigliamento,
+      oggetti e idee regalo. Tocca i punti sulla foto per guardarti intorno.
+    </p>
+  </header>
+
+  <div class="negozio__griglia">
+    <div class="sala" data-svela>
+      <Picture src={sala} formats={['avif', 'webp']} widths={[400, 640, 900, 1300]}
+        sizes="(max-width: 860px) 92vw, 46vw" loading="lazy" decoding="async"
+        alt="La sala di Benny Store: pareti antracite con quadri, un pilastro al centro e il reparto abbigliamento sul fondo" />
+      <ul class="sala__punti" aria-label="Punti della sala">
+        {punti.map((p, i) => (
+          <li style={`--x:${p.x}%;--y:${p.y}%`}>
+            <button type="button" class="punto" id={p.id} data-offset="0.25" data-punto={i}
+              aria-expanded="false" aria-controls={`dettaglio-${i}`}>
+              <span class="punto__num" aria-hidden="true">{i + 1}</span>
+              <span class="sr-only">{p.titolo}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="dettagli">
+      <div class="dettaglio dettaglio--vuoto" data-vuoto>
+        <p class="etichetta">Quattro punti, quattro angoli</p>
+        <ol>
+          {punti.map((p, i) => (
+            <li><button type="button" class="dettaglio__voce" data-apri={i}><span>{i + 1}</span>{p.titolo}</button></li>
+          ))}
+        </ol>
+      </div>
+      {punti.map((p, i) => (
+        <article class="dettaglio" id={`dettaglio-${i}`} hidden data-dettaglio={i} aria-labelledby={`dett-tit-${i}`}>
+          <div class="dettaglio__foto">
+            {p.zoom ? (
+              <img src={lente.src} alt={p.alt} loading="lazy" decoding="async" width="900" height="1200"
+                style={`transform-origin:${p.x}% ${p.y}%`} class="dettaglio__lente" />
+            ) : (
+              <Picture src={p.foto!} alt={p.alt} formats={['avif', 'webp']} widths={[400, 700, 1000]}
+                sizes="(max-width: 860px) 92vw, 36vw" loading="lazy" decoding="async" />
+            )}
+          </div>
+          <div class="dettaglio__testo">
+            <p class="etichetta">{String(i + 1).padStart(2, '0')} / 04</p>
+            <h3 id={`dett-tit-${i}`}>{p.titolo}</h3>
+            <p>{p.testo}</p>
+            <div class="dettaglio__azioni">
+              {p.link && <a class="btn btn--scuro btn--piccolo" href={p.link}>Vai al reparto</a>}
+              <button type="button" class="btn btn--vuoto btn--piccolo dettaglio__chiudi" data-chiudi>Chiudi</button>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .negozio__griglia {
+    max-width: 78rem; margin: 0 auto;
+    display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+    gap: clamp(2rem, 5vw, 5rem); align-items: start;
+  }
+  .sala { position: relative; box-shadow: 0 40px 80px -30px rgba(22, 23, 26, 0.55); }
+  .sala :global(img) { width: 100%; height: auto; }
+  .sala__punti { list-style: none; margin: 0; padding: 0; }
+  .sala__punti li { position: absolute; left: var(--x); top: var(--y); transform: translate(-50%, -50%); }
+
+  .punto {
+    position: relative; display: grid; place-items: center;
+    width: 2.75rem; height: 2.75rem; padding: 0;
+    border-radius: 50%; border: 2px solid #fff;
+    background: rgba(61, 64, 196, 0.92); color: #fff; cursor: pointer;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+    transition: transform var(--dur-rapida) var(--ease-out), background-color var(--dur-rapida) var(--ease-out);
+  }
+  .punto::after {
+    content: ''; position: absolute; inset: -2px; border-radius: 50%;
+    border: 2px solid #fff; opacity: 0;
+  }
+  .negozio.in-vista .punto::after { animation: richiamo 1.6s var(--ease-out) 3; }
+  @keyframes richiamo { from { transform: scale(1); opacity: 0.8; } to { transform: scale(1.9); opacity: 0; } }
+  .punto:hover { transform: scale(1.08); }
+  .punto:active { transform: scale(0.96); }
+  .punto[aria-expanded='true'] { background: var(--inchiostro); transform: scale(1.12); }
+  .punto__num { font-size: 0.875rem; font-weight: 800; }
+  .punto:focus-visible { outline: 3px solid var(--inchiostro); outline-offset: 3px; }
+
+  .dettagli { position: sticky; top: calc(var(--nav-h) + 1rem); }
+  .dettaglio { display: grid; gap: 1.25rem; }
+  .dettaglio[hidden] { display: none; }
+  .dettaglio--vuoto ol { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: 0.25rem; }
+  .dettaglio__voce {
+    display: flex; align-items: center; gap: 1rem; width: 100%; min-height: 3.25rem; padding: 0.5rem 0;
+    background: none; border: 0; border-bottom: 1px solid rgba(22, 23, 26, 0.18);
+    font-size: clamp(1.25rem, 1rem + 1vw, 1.75rem); font-weight: 800; text-transform: uppercase; letter-spacing: -0.01em;
+    text-align: left; cursor: pointer; color: var(--inchiostro);
+    transition: padding var(--dur-rapida) var(--ease-out), color var(--dur-rapida) var(--ease-out);
+  }
+  .dettaglio__voce span {
+    display: grid; place-items: center; flex: none; width: 2rem; height: 2rem; border-radius: 50%;
+    background: var(--indaco); color: #fff; font-size: 0.8125rem;
+  }
+  .dettaglio__voce:hover { padding-left: 0.5rem; color: var(--indaco); }
+
+  .dettaglio__foto { overflow: hidden; aspect-ratio: 4 / 3; background: var(--parete); }
+  .dettaglio__foto :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .dettaglio__lente { transform: scale(2.6); }
+  .dettaglio__testo { display: grid; gap: 0.75rem; justify-items: start; }
+  .dettaglio__testo h3 { font-size: var(--fs-h3); font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; }
+  .dettaglio__testo .etichetta { color: var(--indaco); }
+  .dettaglio__azioni { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+  .dettaglio__chiudi { --btn-bg: var(--inchiostro); }
+  .js .dettaglio:not([data-vuoto]) { animation: apri var(--dur-media) var(--ease-out); }
+  @keyframes apri { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+  @media (max-width: 860px) {
+    .negozio__griglia { grid-template-columns: 1fr; }
+    .dettagli { position: static; }
+  }
+</style>
+
+<script>
+  const sez = document.querySelector<HTMLElement>('[data-negozio]');
+  if (sez) {
+    const punti = [...sez.querySelectorAll<HTMLButtonElement>('[data-punto]')];
+    const dettagli = [...sez.querySelectorAll<HTMLElement>('[data-dettaglio]')];
+    const vuoto = sez.querySelector<HTMLElement>('[data-vuoto]')!;
+
+    const mostra = (i: number | null, focus = false) => {
+      punti.forEach((p, k) => p.setAttribute('aria-expanded', String(k === i)));
+      dettagli.forEach((d, k) => { d.hidden = k !== i; });
+      vuoto.hidden = i !== null;
+      if (focus && i !== null) dettagli[i].querySelector<HTMLElement>('h3')?.setAttribute('tabindex', '-1');
+      if (focus && i !== null) dettagli[i].querySelector<HTMLElement>('h3')?.focus({ preventScroll: window.innerWidth > 860 });
+    };
+
+    punti.forEach((p, i) => {
+      p.addEventListener('click', () => mostra(p.getAttribute('aria-expanded') === 'true' ? null : i));
+      p.addEventListener('arrivo', () => mostra(i));
+    });
+    sez.querySelectorAll<HTMLButtonElement>('[data-apri]').forEach((b) =>
+      b.addEventListener('click', () => mostra(Number(b.dataset.apri), true)));
+    sez.querySelectorAll<HTMLButtonElement>('[data-chiudi]').forEach((b, i) =>
+      b.addEventListener('click', () => { mostra(null); punti[i].focus(); }));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && dettagli.some((d) => !d.hidden)) {
+        const i = dettagli.findIndex((d) => !d.hidden);
+        mostra(null); punti[i].focus();
+      }
+    });
+
+    // il richiamo dei punti parte (3 volte) solo quando la sezione entra in vista
+    new IntersectionObserver(([e], io) => {
+      if (e.isIntersecting) { sez.classList.add('in-vista'); io.disconnect(); }
+    }, { threshold: 0.3 }).observe(sez);
+  }
+</script>

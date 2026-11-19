@@ -1,0 +1,34 @@
+---
+// Caricamento d'ingresso: solo CSS, nessun JS, non blocca nulla.
+// 0–0,45 s  la striscia LED rossa (quella vera del soffitto) corre lungo il bordo alto
+// 0,3–1 s   le luci della sala si accendono (il velo scuro si dissolve)
+// Il contenuto è già nel DOM e dipinto sotto il velo: LCP non viene ritardato.
+// Con prefers-reduced-motion il velo non c'è.
+---
+<div class="ingresso" aria-hidden="true">
+  <span class="ingresso__led"></span>
+</div>
+
+<style>
+  .ingresso {
+    position: fixed; inset: 0; z-index: 90;
+    pointer-events: none;
+    background: radial-gradient(120% 80% at 50% 0%, rgba(8, 8, 10, 0.86), rgba(8, 8, 10, 0.97));
+    animation: luci-accese 0.7s var(--ease-in-out) 0.32s both;
+  }
+  .ingresso__led {
+    position: absolute; left: 0; right: 0; top: 0; height: 3px;
+    background: var(--led);
+    box-shadow: 0 0 12px 2px rgba(229, 56, 63, 0.75), 0 0 48px 6px rgba(229, 56, 63, 0.35);
+    transform-origin: left;
+    animation: led 0.45s var(--ease-out) both;
+  }
+  @keyframes led { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  @keyframes luci-accese {
+    0% { opacity: 1; visibility: visible; }
+    100% { opacity: 0; visibility: hidden; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ingresso { display: none; }
+  }
+</style>
