@@ -1,8 +1,8 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 
-// DA CONFERMARE: dominio definitivo del sito (serve per canonical, sitemap, Open Graph).
-const SITE = process.env.SITE_URL ?? 'https://www.bennystore.example';
+// Indirizzo pubblico attuale (Vercel). Con un dominio proprio: SITE_URL=https://... npm run build
+const SITE = process.env.SITE_URL ?? 'https://bennystore.vercel.app';
 
 export default defineConfig({
   site: SITE,

@@ -13,10 +13,16 @@ document.addEventListener('click', (e) => {
   if (vaiA(url.hash)) e.preventDefault();
 });
 
-// Arrivo da un'altra pagina con un'ancora
+// Arrivo da un'altra pagina con "/#sezione": si scorre lì e si toglie subito il # dall'indirizzo
 if (location.hash.length > 1) {
-  window.addEventListener('load', () => setTimeout(() => vaiA(location.hash), 60), { once: true });
+  const destinazione = location.hash;
+  history.replaceState(null, '', location.pathname + location.search);
+  window.addEventListener('load', () => setTimeout(() => vaiA(destinazione), 60), { once: true });
 }
+// # aggiunto a mano o da un link esterno sulla stessa pagina: stessa cosa
+window.addEventListener('hashchange', () => {
+  if (location.hash.length > 1 && !vaiA(location.hash, true)) history.replaceState(null, '', location.pathname + location.search);
+});
 
 // Comparsa morbida delle sezioni (una sola curva per tutto il sito)
 const svela = document.querySelectorAll<HTMLElement>('[data-svela]');

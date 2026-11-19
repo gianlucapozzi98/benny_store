@@ -20,7 +20,9 @@ npm run foto       # rigenera src/assets/foto dagli originali
 npm run icone      # rigenera og.jpg, favicon e manifest in public/
 ```
 
-Per la pubblicazione impostare il dominio: `SITE_URL=https://www.dominio.it npm run build` (serve per canonical, sitemap, robots e Open Graph). Oggi c'è il segnaposto `https://www.bennystore.example`.
+Il sito è pubblicato su `https://bennystore.vercel.app` (valore predefinito di canonical, sitemap, robots e Open Graph). Con un dominio proprio: `SITE_URL=https://www.dominio.it npm run build`, o la variabile `SITE_URL` nelle impostazioni del progetto Vercel.
+
+I link interni ("Le opere", "Il negozio"…) scorrono alla sezione senza aggiungere `#sezione` all'indirizzo; se si arriva da un'altra pagina con `/#sezione`, il `#` viene tolto subito.
 
 > La cartella è sulla Scrivania sincronizzata con iCloud, che a volte crea copie "file 2.ext" dentro `dist/`. Prima di pubblicare: `rm -rf dist && npm run build`.
 
@@ -61,7 +63,7 @@ Quando arrivano gli **orari veri**: inserirli in `negozio.orari`, sostituire il 
 - **Autorizzazione all'uso delle foto**, in particolare quelle con **persone di spalle**: `negozio-sala-pilastro` (usata in "Dentro il negozio" e nell'immagine social), `negozio-visitatore-*` (non usate).
 - Logo in alta risoluzione o vettoriale (l'indaco #3D40C4 è stimato da una foto sfocata del biglietto).
 - La sala al buio gli piace o preferisce un sito chiaro?
-- **Dominio** definitivo (www o senza), **hosting** e fornitore email (servono anche per la privacy).
+- **Dominio** proprio (oggi bennystore.vercel.app; www o senza) e fornitore email (servono anche per la privacy). Hosting: Vercel.
 - Foto in più che mancano: oggettistica e regali in primo piano, vetrina/insegna esterna, una foto orizzontale per i social.
 
 ## Testi legali: sono bozze da validare
@@ -90,7 +92,7 @@ Tutte e tre le pagine mostrano in alto il riquadro "Bozza da validare" (togliere
 | 11 | Meta description ≤ 155 con CTA | 135 caratteri | Build |
 | 12 | Open Graph 1200×630 | `public/og.jpg`, foto vera della sala | File (contiene una persona di spalle: vedi autorizzazioni) |
 | 13 | Favicon completa | SVG, ICO 32, apple-touch 180, 192/512, maskable, manifest | `public/` |
-| 14 | Canonical e redirect | Canonical su ogni pagina; `public/_redirects` di esempio (Netlify/Cloudflare) da completare col dominio vero | Da fare all'hosting |
+| 14 | Canonical e redirect | Canonical su ogni pagina (bennystore.vercel.app). Su Vercel http→https è automatico; con un dominio proprio impostare il redirect www/non-www nelle impostazioni Domains di Vercel (`public/_redirects` vale solo per Netlify/Cloudflare) | Da fare all'hosting |
 | 15 | robots.txt | Generato con link alla sitemap | `/robots.txt` |
 | 16 | sitemap.xml | Home + 3 pagine | `/sitemap.xml` |
 | 17 | 404 | "Questa parete è vuota", link a home e Chiamaci, `noindex` | Risponde 404 in preview |
