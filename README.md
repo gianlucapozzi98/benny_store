@@ -81,7 +81,7 @@ Tutte e tre le pagine mostrano in alto il riquadro "Bozza da validare" (togliere
 | 2 | Termini / note legali | Bozza; niente condizioni di vendita (nessun ordine online) | Pagina `/termini` |
 | 3 | Cookie (Garante 2021) | Accetta / Rifiuta / Personalizza, X = rifiuta, scelta valida 6 mesi, "Preferenze cookie" in footer; mappa solo dopo consenso; nessuna statistica | Chrome headless: 0 richieste a domini esterni prima del consenso su tutte le pagine; dopo "Accetta e mostra la mappa" l'iframe compare |
 | 4 | Dati societari nel footer | P.IVA e indirizzo reali; ragione sociale, C.F., REA, PEC con segnaposto tratteggiato | Visivo |
-| 5 | Accessibilità WCAG 2.2 AA | Tastiera, focus visibile, salta-al-contenuto, pausa del pilastro, reduced motion, alt, target ≥ 24 px | Lighthouse Accessibility 100 (home mobile/desktop, privacy, accessibilità); test tastiera: Tab → Pausa → Invio ferma la rotazione (deriva 0°), Spazio la riprende |
+| 5 | Accessibilità WCAG 2.2 AA | Tastiera, focus visibile, salta-al-contenuto, rotazione autonoma del pilastro limitata a 5 s (WCAG 2.2.2, quindi niente pulsante di pausa), reduced motion, alt, target ≥ 24 px | Lighthouse Accessibility (vedi punto 20); test headless: dopo 5 s la rotazione autonoma si ferma |
 | 6 | CTA chiara | "Chiamaci" in nav, hero, sezioni e footer | Visivo |
 | 7 | FAQ + FAQPage | 3 domande con risposta certa; orari/spedizioni/valutazioni in attesa di risposta | JSON-LD in `#visita` |
 | 8 | Alt descrittivi | Tutti, senza autori né titoli | `IMMAGINI.md` |

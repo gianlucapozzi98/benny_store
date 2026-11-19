@@ -89,12 +89,6 @@ const facce = [
           ))}
         </ol>
       </nav>
-
-      <button class="pausa" type="button" data-pausa aria-pressed="false">
-        <span class="pausa__icona" aria-hidden="true"></span>
-        <span data-pausa-testo>Pausa</span>
-        <span class="sr-only"> la rotazione del pilastro</span>
-      </button>
     </div>
   </div>
 </section>
@@ -266,25 +260,6 @@ const facce = [
   .indice a[aria-current='true'] { color: var(--avorio); }
   .indice a[aria-current='true']::after { transform: scaleX(1); }
 
-  .pausa {
-    justify-self: end;
-    display: inline-flex; align-items: center; gap: 0.6rem;
-    min-height: 2.75rem; padding: 0 1.1rem;
-    background: rgba(22, 23, 26, 0.55);
-    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.18); border-radius: 999px;
-    font-size: var(--fs-etichetta); font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
-    cursor: pointer;
-    transition: transform var(--dur-rapida) var(--ease-out), border-color var(--dur-rapida) var(--ease-out);
-  }
-  .pausa:hover { transform: scale(1.02); border-color: rgba(255, 255, 255, 0.5); }
-  .pausa:active { transform: scale(0.98); }
-  .pausa__icona { width: 10px; height: 12px; border-left: 3px solid currentColor; border-right: 3px solid currentColor; }
-  .pausa[aria-pressed='true'] .pausa__icona {
-    border: 0; width: 0; height: 0;
-    border-left: 10px solid currentColor; border-top: 6px solid transparent; border-bottom: 6px solid transparent;
-  }
-
   /* ---------- mobile ---------- */
   @media (max-width: 860px) {
     .hero__scena { --W: min(50vw, 270px); --H: calc(var(--W) * 1.4); grid-template-rows: var(--nav-h) 1fr auto; }
@@ -294,7 +269,7 @@ const facce = [
       height: calc(var(--H) + 1.5em);
     }
     .piede__qualifica { letter-spacing: 0.14em; }
-    .piede { grid-template-columns: 1fr auto; row-gap: 1rem; }
+    .piede { grid-template-columns: 1fr; row-gap: 1rem; }
     .piede__testo { grid-column: 1 / -1; }
     .piede__stato { justify-items: start; text-align: left; }
     .indice { margin-left: -0.75rem; }
@@ -304,7 +279,6 @@ const facce = [
   @media (max-width: 400px) {
     .indice a { width: 2.25rem; }
     .indice { margin-left: -0.5rem; }
-    .pausa { padding: 0 0.9rem; }
     .piede__cta .btn { flex: 1 1 auto; padding: 0 0.85rem; font-size: 0.75rem; letter-spacing: 0.08em; }
     .piede__qualifica { letter-spacing: 0.1em; font-size: 0.6875rem; }
   }
@@ -316,7 +290,7 @@ const facce = [
   @media (prefers-reduced-motion: reduce) {
     .hero__scena { height: auto; min-height: 100svh; grid-template-rows: var(--nav-h) auto auto; row-gap: 2rem; }
     .palco { display: block; padding-top: 2rem; }
-    .nome--contorno, .pilastro__ombra, .pausa, .piede__stato, .hero__luci { display: none; }
+    .nome--contorno, .pilastro__ombra, .piede__stato, .hero__luci { display: none; }
     .nome { height: auto; margin-bottom: 2rem; }
     .pilastro { width: 100%; max-width: var(--max); margin: 0 auto; height: auto; perspective: none; }
     .prisma {

@@ -1,10 +1,13 @@
 // Il pilastro: rotazione = scroll (scrub) + rotazione lenta autonoma.
-// Pausa: pulsante, hover, focus, hero fuori schermo, scheda nascosta.
+// La rotazione autonoma dura solo i primi 5 secondi (WCAG 2.2.2: sotto i 5 s non serve
+// un pulsante di pausa); poi il pilastro gira solo con lo scroll. Si ferma anche a
+// hover/focus, fuori schermo e con la scheda nascosta.
 // Con prefers-reduced-motion non viene eseguito: il CSS mostra le card.
 import { initMovimento, riduci } from './movimento';
 
 const PASSO = 72; // 360 / 5 facce
-const VEL_AUTO = 7; // gradi al secondo
+const DURATA_AUTO = 5; // secondi di rotazione autonoma
+const VEL_AUTO = PASSO / DURATA_AUTO; // una faccia esatta in 5 s
 
 export function initPilastro() {
   const hero = document.querySelector<HTMLElement>('[data-hero]');
@@ -13,8 +16,6 @@ export function initPilastro() {
   const scena = hero.querySelector<HTMLElement>('[data-scena]')!;
   const prisma = hero.querySelector<HTMLElement>('[data-prisma]')!;
   const facce = [...hero.querySelectorAll<HTMLElement>('[data-faccia]')];
-  const btn = hero.querySelector<HTMLButtonElement>('[data-pausa]')!;
-  const btnTesto = hero.querySelector<HTMLElement>('[data-pausa-testo]')!;
   const categoria = hero.querySelector<HTMLElement>('[data-categoria]')!;
   const indice = [...hero.querySelectorAll<HTMLAnchorElement>('[data-indice]')];
   const nomi = facce.map((f) => f.querySelector('.faccia__titolo')?.textContent ?? '');
@@ -24,7 +25,7 @@ export function initPilastro() {
   let auto = 0;          // gradi accumulati dalla rotazione autonoma
   let scroll = 0;        // gradi dovuti allo scroll
   let theta = 0;         // angolo mostrato (inseguimento morbido)
-  let inPausa = false;   // pulsante
+  let tempoAuto = 0;     // secondi di rotazione autonoma già trascorsi
   let sospeso = false;   // hover / focus
   let visibile = true;
   let ultimo = performance.now();
@@ -38,7 +39,7 @@ export function initPilastro() {
     end: () => '+=' + window.innerHeight * 1.6,
     pin: scena,
     scrub: true,
-    onUpdate: (st) => { scroll = st.progress * PASSO * 4; },
+    onUpdate: (st) => { scroll = st.progress * PASSO * 4; avvia(); },
   });
   // Il nome gigante si schiarisce (si ritira) mentre il pilastro prende la scena.
   gsap.to(hero.querySelectorAll('[data-nome], [data-nome-contorno]'), {
@@ -46,7 +47,7 @@ export function initPilastro() {
     scrollTrigger: { trigger: hero, start: 'top top', end: () => '+=' + window.innerHeight * 1.6, scrub: true },
   });
 
-  const aggiornaFacce = (t: number) => {
+  function aggiornaFacce(t: number) {
     for (let i = 0; i < facce.length; i++) {
       const rel = ((((i * PASSO - t) % 360) + 540) % 360) - 180;
       const c = Math.cos((rel * Math.PI) / 180);
@@ -62,47 +63,48 @@ export function initPilastro() {
       categoria.textContent = nomi[k];
       indice.forEach((a, j) => (j === k ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current')));
     }
-  };
+  }
 
-  const tick = (ora: number) => {
+  function tick(ora: number) {
     const dt = Math.min(0.05, (ora - ultimo) / 1000);
     ultimo = ora;
-    if (!inPausa && !sospeso) auto += VEL_AUTO * dt;
+    if (!sospeso && tempoAuto < DURATA_AUTO) {
+      const passo = Math.min(dt, DURATA_AUTO - tempoAuto);
+      tempoAuto += passo;
+      auto += VEL_AUTO * passo;
+      // alla fine si allinea sempre su una faccia intera
+      if (tempoAuto >= DURATA_AUTO) auto = Math.round((auto + scroll) / PASSO) * PASSO - scroll;
+    }
     const target = auto + scroll;
     theta += (target - theta) * Math.min(1, dt * 7);
     prisma.style.setProperty('--theta', theta.toFixed(3));
     aggiornaFacce(theta);
-    raf = visibile && !document.hidden ? requestAnimationFrame(tick) : 0;
-  };
-  const avvia = () => { if (!raf && visibile && !document.hidden) { ultimo = performance.now(); raf = requestAnimationFrame(tick); } };
+    const fermo = tempoAuto >= DURATA_AUTO && !sospeso && Math.abs(target - theta) < 0.01;
+    raf = visibile && !document.hidden && !fermo ? requestAnimationFrame(tick) : 0;
+  }
+  function avvia() { if (!raf && visibile && !document.hidden) { ultimo = performance.now(); raf = requestAnimationFrame(tick); } }
 
   // Pausa fuori schermo
   new IntersectionObserver(([e]) => { visibile = e.isIntersecting; avvia(); }, { threshold: 0 }).observe(scena);
   document.addEventListener('visibilitychange', avvia);
 
-  // Pulsante pausa
-  btn.addEventListener('click', () => {
-    inPausa = !inPausa;
-    btn.setAttribute('aria-pressed', String(inPausa));
-    btnTesto.textContent = inPausa ? 'Riprendi' : 'Pausa';
-  });
-
   // Pausa a hover e focus; il focus porta la faccia davanti
   const pilastro = hero.querySelector<HTMLElement>('[data-pilastro]')!;
   pilastro.addEventListener('pointerenter', () => { sospeso = true; });
-  pilastro.addEventListener('pointerleave', () => { sospeso = false; });
+  pilastro.addEventListener('pointerleave', () => { sospeso = false; avvia(); });
   const portaDavanti = (i: number) => {
     const delta = ((((i * PASSO - (auto + scroll)) % 360) + 540) % 360) - 180;
     auto += delta;
+    avvia();
   };
   facce.forEach((f, i) => {
     const a = f.querySelector('a')!;
     a.addEventListener('focus', () => { sospeso = true; portaDavanti(i); });
-    a.addEventListener('blur', () => { sospeso = false; });
+    a.addEventListener('blur', () => { sospeso = false; avvia(); });
   });
   indice.forEach((a, i) => {
     const su = () => { sospeso = true; portaDavanti(i); };
-    const giu = () => { sospeso = false; };
+    const giu = () => { sospeso = false; avvia(); };
     a.addEventListener('pointerenter', su); a.addEventListener('focus', su);
     a.addEventListener('pointerleave', giu); a.addEventListener('blur', giu);
   });
