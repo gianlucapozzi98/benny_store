@@ -1,18 +1,18 @@
 ---
 import Base from '../layouts/Base.astro';
-import HeroPilastro from '../components/HeroPilastro.astro';
-import Opere from '../components/Opere.astro';
-import Negozio from '../components/Negozio.astro';
-import Reparti from '../components/Reparti.astro';
-import Regali from '../components/Regali.astro';
+import HeroSala from '../components/HeroSala.astro';
+import Manifesto from '../components/Manifesto.astro';
+import Collezione from '../components/Collezione.astro';
+import Spazio from '../components/Spazio.astro';
 import Visita from '../components/Visita.astro';
 import { negozio } from '../data/sito';
+import { opere } from '../data/opere';
 
 const ld = {
   '@context': 'https://schema.org',
-  '@type': 'Store',
+  '@type': ['ArtGallery', 'Store'],
   name: negozio.nome,
-  description: 'Arte & abbigliamento: quadri d\'autore, classico moderno, pop art, abbigliamento, oggettistica e idee regalo.',
+  description: "Galleria d'arte e negozio a Cesano Boscone: quadri d'autore, classico moderno, pop art, grafiche, abbigliamento, oggettistica e idee regalo.",
   url: Astro.site?.href,
   image: new URL('/og.jpg', Astro.site).href,
   telephone: '+393501330118',
@@ -25,18 +25,22 @@ const ld = {
     addressRegion: negozio.indirizzo.provincia,
     addressCountry: 'IT',
   },
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'La collezione',
+    itemListElement: opere.map((o) => ({ '@type': 'VisualArtwork', name: o.titolo, url: new URL(`/opere/${o.slug}`, Astro.site).href })),
+  },
 };
 ---
 <Base
-  title="Benny Store | Arte e abbigliamento a Cesano Boscone"
-  description="Quadri, pop art, abbigliamento e idee regalo in via delle Betulle 1/3 a Cesano Boscone. Vieni a scoprirli o chiamaci: +39 350 133 0118."
+  title="Benny Store | Galleria d'arte a Cesano Boscone"
+  description="Quadri d'autore, pop art, grafiche e classici in via delle Betulle 1/3 a Cesano Boscone. Guarda la collezione online o chiamaci: +39 350 133 0118."
   ingresso
 >
   <script type="application/ld+json" slot="head" set:html={JSON.stringify(ld)} />
-  <HeroPilastro />
-  <Opere />
-  <Negozio />
-  <Reparti />
-  <Regali />
+  <HeroSala />
+  <Manifesto />
+  <Collezione />
+  <Spazio />
   <Visita />
 </Base>

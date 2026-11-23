@@ -44,6 +44,8 @@ if (window.matchMedia('(pointer: fine) and (hover: hover)').matches && !riduci()
   const c = document.createElement('div');
   c.className = 'cursore';
   c.setAttribute('aria-hidden', 'true');
+  const parola = document.createElement('span');
+  c.append(parola);
   document.body.append(c);
   let x = -100, y = -100, cx = -100, cy = -100, raf = 0;
   // il loop gira solo finché il cursore si muove, poi si ferma
@@ -57,7 +59,12 @@ if (window.matchMedia('(pointer: fine) and (hover: hover)').matches && !riduci()
     if (!raf) raf = requestAnimationFrame(loop);
   }, { passive: true });
   document.addEventListener('pointerover', (e) => {
-    c.classList.toggle('cursore--attivo', !!(e.target as HTMLElement).closest('a, button, label, [role="button"]'));
+    const t = e.target as HTMLElement;
+    // sulle opere il cursore diventa un cerchio con una parola ("Guarda")
+    const conTesto = t.closest<HTMLElement>('[data-cursore]');
+    if (conTesto) parola.textContent = conTesto.dataset.cursore ?? '';
+    c.classList.toggle('cursore--testo', !!conTesto);
+    c.classList.toggle('cursore--attivo', !conTesto && !!t.closest('a, button, label, [role="button"]'));
   });
   document.documentElement.addEventListener('pointerleave', () => { x = y = -100; if (!raf) raf = requestAnimationFrame(loop); });
 }

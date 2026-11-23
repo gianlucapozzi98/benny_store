@@ -1,45 +1,55 @@
 ---
-// VIENI A TROVARCI — indirizzo, contatti, mappa solo con consenso, FAQ vere.
+// VISITA — come arrivare e come chiedere di un'opera. Righe da elenco, mappa solo con consenso, FAQ vere.
 import { negozio, mapsHref } from '../data/sito';
 const ind = `${negozio.indirizzo.via}, ${negozio.indirizzo.citta} (${negozio.indirizzo.provincia})`;
 const embed = 'https://www.google.com/maps?output=embed&q=' + encodeURIComponent('Via delle Betulle 1/3, Cesano Boscone MI');
 
 // Solo domande con risposta certa. Orari, spedizioni, valutazioni: da chiedere al cliente.
 const faq = [
-  { d: 'Dove si trova Benny Store?', r: `In ${ind}.` },
-  { d: 'Cosa trovo in negozio?', r: "Quadri d'autore, classico moderno, pop art, abbigliamento, oggettistica e idee regalo. All'interno c'è una galleria con le opere." },
-  { d: "Come chiedo informazioni su un'opera?", r: `Chiamaci al ${negozio.telefono.vista}, scrivi a ${negozio.email} oppure passa in negozio.` },
+  { d: 'Dove si trova la galleria?', r: `In ${ind}.` },
+  { d: "Come chiedo il prezzo o l'artista di un'opera?", r: `Chiamaci al ${negozio.telefono.vista}, scrivi a ${negozio.email} oppure passa in galleria. Da ogni pagina d'opera puoi scriverci con il messaggio già pronto.` },
+  { d: 'Cosa trovo oltre ai quadri?', r: "Quadri d'autore, classico moderno e pop art, e poi abbigliamento, oggettistica e idee regalo." },
 ];
 const faqLd = {
   '@context': 'https://schema.org', '@type': 'FAQPage',
   mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.d, acceptedAnswer: { '@type': 'Answer', text: f.r } })),
 };
 ---
-<section class="visita sezione chiaro pennellate" id="visita" aria-labelledby="visita-titolo">
-  <header class="sezione__testa" data-svela>
-    <p class="etichetta">Contatti</p>
-    <h2 id="visita-titolo" class="sezione__titolo">Vieni a<br />trovarci</h2>
+<section class="visita sezione" id="visita" aria-labelledby="visita-titolo">
+  <header class="visita__testa">
+    <p class="etichetta visita__eti" data-svela>Visita</p>
+    <h2 id="visita-titolo" class="titolo-sezione" data-svela>Vieni a vederle<br />dal vivo.</h2>
   </header>
 
   <div class="visita__griglia">
-    <div class="visita__info" data-svela>
-      <dl>
-        <div><dt class="etichetta">Indirizzo</dt><dd><a class="link" href={mapsHref} target="_blank" rel="noopener">{negozio.indirizzo.via}<br />{negozio.indirizzo.citta} ({negozio.indirizzo.provincia})<span class="sr-only"> (apre Google Maps in una nuova scheda)</span></a></dd></div>
-        <div><dt class="etichetta">Telefono</dt><dd><a class="link" href={negozio.telefono.href}>{negozio.telefono.vista}</a></dd></div>
-        <div><dt class="etichetta">Email</dt><dd><a class="link" href={`mailto:${negozio.email}`}>{negozio.email}</a></dd></div>
-        <div><dt class="etichetta">Orari</dt><dd><span class="da-confermare">Orari da confermare</span><br /><small>Ti consigliamo di chiamare prima di passare.</small></dd></div>
-      </dl>
-      <div class="visita__cta">
-        <a class="btn btn--scuro" href={negozio.telefono.href}>Chiamaci</a>
-        <a class="btn btn--scuro btn--vuoto" href={mapsHref} target="_blank" rel="noopener">Indicazioni<span class="sr-only"> (Google Maps, nuova scheda)</span></a>
+    <dl class="righe" data-svela>
+      <div class="riga-info">
+        <dt class="etichetta">Indirizzo</dt>
+        <dd>{negozio.indirizzo.via}, {negozio.indirizzo.citta} ({negozio.indirizzo.provincia})</dd>
+        <dd class="riga-info__azione"><a class="sottolinea" href={mapsHref} target="_blank" rel="noopener">Indicazioni<span class="sr-only"> (Google Maps, nuova scheda)</span> <span aria-hidden="true">↗</span></a></dd>
       </div>
-    </div>
+      <div class="riga-info">
+        <dt class="etichetta">Telefono</dt>
+        <dd>{negozio.telefono.vista}</dd>
+        <dd class="riga-info__azione"><a class="sottolinea" href={negozio.telefono.href}>Chiama <span aria-hidden="true">→</span></a></dd>
+      </div>
+      <div class="riga-info">
+        <dt class="etichetta">Email</dt>
+        <dd class="riga-info__email">{negozio.email}</dd>
+        <dd class="riga-info__azione"><a class="sottolinea" href={`mailto:${negozio.email}`}>Scrivi <span aria-hidden="true">→</span></a></dd>
+      </div>
+      <div class="riga-info">
+        <dt class="etichetta">Orari</dt>
+        <dd><span class="da-confermare">Orari da confermare</span></dd>
+        <dd class="riga-info__azione riga-info__nota">Chiama prima di passare</dd>
+      </div>
+    </dl>
 
     <div class="mappa" data-mappa data-src={embed} data-svela>
       <div class="mappa__segnaposto" data-mappa-segnaposto>
-        <p class="mappa__indirizzo">{negozio.indirizzo.via}<br />{negozio.indirizzo.citta}</p>
+        <p class="mappa__indirizzo">{negozio.indirizzo.via}<br /><em>{negozio.indirizzo.citta}</em></p>
         <p>La mappa è di Google Maps, che usa cookie di terze parti. La carichiamo solo se lo scegli tu.</p>
-        <button type="button" class="btn btn--scuro btn--piccolo" data-mappa-carica>Accetta e mostra la mappa</button>
+        <button type="button" class="btn btn--chiaro btn--piccolo" data-mappa-carica>Accetta e mostra la mappa</button>
         <button type="button" class="link mappa__pref" data-apri-preferenze>Preferenze cookie</button>
       </div>
     </div>
@@ -58,48 +68,58 @@ const faqLd = {
 </section>
 
 <style>
-  .visita__griglia {
-    max-width: var(--max); margin: 0 auto;
-    display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(2rem, 5vw, 5rem);
-  }
-  .visita dl { margin: 0; display: grid; gap: 1.5rem; }
-  .visita dt { color: var(--indaco); margin-bottom: 0.3rem; }
-  .visita dd { margin: 0; font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem); font-weight: 600; line-height: 1.4; }
-  .visita dd small { font-size: 0.9375rem; font-weight: 400; }
-  .visita__cta { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 2rem; }
-  .visita__cta .btn--vuoto { color: var(--inchiostro); }
-  .visita__cta .btn--vuoto:hover { color: var(--avorio); }
+  .visita { max-width: calc(var(--max) + 2 * var(--gutter)); margin: 0 auto; }
+  .visita__testa { display: grid; gap: 1.5rem; margin-bottom: clamp(3rem, 6vw, 5rem); }
+  .visita__eti { color: var(--grafite); }
 
-  .mappa { position: relative; min-height: 24rem; border-radius: 16px; overflow: hidden; background: var(--parete); color: var(--avorio); }
+  .visita__griglia { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: clamp(2rem, 5vw, 5rem); align-items: start; }
+
+  .righe { margin: 0; border-top: 1px solid var(--inchiostro); }
+  .riga-info {
+    display: grid; grid-template-columns: 7.5rem 1fr auto; align-items: baseline; gap: 1rem;
+    padding: 1.25rem 0; border-bottom: 1px solid var(--linea);
+  }
+  .riga-info dt { color: var(--grafite); }
+  .riga-info dd { margin: 0; font-family: var(--serif); font-size: clamp(1.375rem, 1rem + 1.2vw, 2.25rem); line-height: 1.15; }
+  .riga-info__email { overflow-wrap: anywhere; }
+  .riga-info dd.riga-info__azione { font-family: var(--font); font-size: var(--fs-etichetta); font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; white-space: nowrap; }
+  .riga-info__azione a { display: inline-block; padding: 0.75rem 0; }
+  .riga-info__nota { color: var(--grafite); font-weight: 600 !important; }
+
+  .mappa { position: relative; min-height: 26rem; overflow: hidden; background: var(--sala); color: var(--avorio); }
   .mappa :global(iframe) { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
   .mappa__segnaposto {
-    position: absolute; inset: 0; display: grid; align-content: center; justify-items: start; gap: 1rem;
-    padding: clamp(1.5rem, 4vw, 3rem);
+    position: absolute; inset: 0; display: grid; align-content: end; justify-items: start; gap: 1rem;
+    padding: clamp(1.5rem, 4vw, 2.5rem);
     background:
-      repeating-linear-gradient(0deg, transparent 0 46px, rgba(255,255,255,0.05) 46px 48px),
-      repeating-linear-gradient(90deg, transparent 0 46px, rgba(255,255,255,0.05) 46px 48px),
-      var(--parete);
+      radial-gradient(50% 40% at 70% 30%, rgba(229, 56, 63, 0.18), transparent 70%),
+      repeating-linear-gradient(0deg, transparent 0 46px, rgba(255, 255, 255, 0.05) 46px 47px),
+      repeating-linear-gradient(90deg, transparent 0 46px, rgba(255, 255, 255, 0.05) 46px 47px),
+      var(--sala);
   }
-  .mappa__segnaposto p { max-width: 36ch; }
-  .mappa__indirizzo { font-size: clamp(1.5rem, 1rem + 2vw, 2.5rem); font-weight: 900; text-transform: uppercase; line-height: 1; }
-  .mappa .btn--scuro { --btn-bg: var(--avorio); --btn-fg: var(--inchiostro); }
+  .mappa__segnaposto p { max-width: 36ch; font-size: 0.9375rem; color: rgba(244, 242, 236, 0.8); }
+  .mappa__segnaposto p.mappa__indirizzo { font-family: var(--serif); font-size: clamp(2rem, 1.4rem + 2vw, 3.25rem); line-height: 1; color: var(--avorio); }
   .mappa__pref { background: none; border: 0; padding: 0.5rem 0; cursor: pointer; font-size: 0.875rem; }
 
-  .faq { max-width: var(--max); margin: clamp(4rem, 8vw, 6rem) auto 0; }
-  .faq__titolo { font-size: var(--fs-h3); font-weight: 900; text-transform: uppercase; margin-bottom: 1rem; }
-  .faq__voce { border-top: 1px solid rgba(22, 23, 26, 0.2); }
-  .faq__voce:last-child { border-bottom: 1px solid rgba(22, 23, 26, 0.2); }
+  .faq { margin-top: clamp(4rem, 8vw, 6rem); max-width: 52rem; }
+  .faq__titolo { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: var(--fs-h3); margin-bottom: 1rem; }
+  .faq__voce { border-top: 1px solid var(--linea); }
+  .faq__voce:last-child { border-bottom: 1px solid var(--linea); }
   .faq__voce summary {
     display: flex; justify-content: space-between; align-items: center; gap: 1rem;
     min-height: 3.5rem; padding: 0.75rem 0; cursor: pointer; list-style: none;
-    font-weight: 700; font-size: 1.125rem;
+    font-weight: 600; font-size: 1.0625rem;
   }
   .faq__voce summary::-webkit-details-marker { display: none; }
   .faq__voce summary::after { content: '+'; font-size: 1.5rem; font-weight: 300; transition: transform var(--dur-rapida) var(--ease-out); }
   .faq__voce[open] summary::after { transform: rotate(45deg); }
-  .faq__voce p { padding-bottom: 1.25rem; max-width: 64ch; }
+  .faq__voce p { padding-bottom: 1.25rem; max-width: 64ch; color: var(--grafite); }
 
-  @media (max-width: 860px) { .visita__griglia { grid-template-columns: 1fr; } }
+  @media (max-width: 960px) { .visita__griglia { grid-template-columns: 1fr; } }
+  @media (max-width: 560px) {
+    .riga-info { grid-template-columns: 1fr auto; gap: 0.25rem 1rem; }
+    .riga-info dt { grid-column: 1 / -1; }
+  }
 </style>
 
 <script>

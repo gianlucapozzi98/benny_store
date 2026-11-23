@@ -1,0 +1,206 @@
+---
+// LA COLLEZIONE — tutte le opere, ognuna "appesa" alla sua parete.
+// Filtri per sezione (i riquadri si riordinano con GSAP Flip), numero da catalogo, titolo, sezione.
+// Al passaggio la parete prende il colore dell'opera. Ogni opera ha la sua pagina.
+import { Picture } from 'astro:assets';
+import { opere, categorie, type Categoria } from '../data/opere';
+const conta = (c: Categoria) => opere.filter((o) => o.categoria === c).length;
+---
+<section class="collezione sezione" id="collezione" aria-labelledby="collezione-titolo" data-collezione>
+  <header class="collezione__testa">
+    <p class="etichetta collezione__eti" data-svela>Le opere</p>
+    <h2 id="collezione-titolo" class="titolo-sezione" data-svela>La collezione<span class="collezione__tot">({opere.length})</span></h2>
+    <p class="collezione__intro" data-svela>
+      Quindici opere scelte dalle nostre pareti. I titoli li abbiamo dati noi, per riconoscerle:
+      artista, tecnica, misure e prezzo te li diciamo in galleria o al telefono.
+    </p>
+  </header>
+
+  <div class="filtri" role="group" aria-label="Mostra le opere per sezione" data-svela>
+    <button type="button" class="filtro" aria-pressed="true" data-filtro="tutte">Tutte <span>{opere.length}</span></button>
+    {(Object.keys(categorie) as Categoria[]).map((c) => (
+      <button type="button" class="filtro" aria-pressed="false" data-filtro={c}>{categorie[c].nome} <span>{conta(c)}</span></button>
+    ))}
+  </div>
+  <p class="sr-only" aria-live="polite" data-filtri-stato></p>
+
+  <ul class="pezzi" data-pezzi>
+    {opere.map((o) => (
+      <li class="pezzo" data-pezzo data-categoria={o.categoria}>
+        <a class="pezzo__link" href={`/opere/${o.slug}`} data-cursore="Guarda">
+          <div class:list={['pezzo__parete', { 'pezzo__parete--larga': o.orizzontale }]} style={`--fondo:${o.fondo}`}>
+            <Picture
+              class="pezzo__img" data-vt={o.slug}
+              src={o.img} alt={o.alt} formats={['avif', 'webp']}
+              widths={[320, 480, 720, 960]} sizes="(max-width: 700px) 40vw, (max-width: 1100px) 38vw, 24vw"
+              loading="lazy" decoding="async"
+            />
+          </div>
+          <div class="pezzo__dida">
+            <span class="pezzo__num" aria-hidden="true">{o.numero}</span>
+            <span class="pezzo__titolo">{o.titolo}</span>
+            <span class="pezzo__cat etichetta">{categorie[o.categoria].breve}</span>
+          </div>
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .collezione { max-width: calc(var(--max) + 2 * var(--gutter)); margin: 0 auto; }
+  .collezione__testa {
+    display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter); row-gap: 1.5rem;
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+  .collezione__eti { grid-column: 1 / -1; color: var(--grafite); }
+  .collezione__testa h2 { grid-column: 1 / span 8; }
+  .collezione__tot { font-family: var(--font); font-style: normal; font-size: 0.16em; font-weight: 600; letter-spacing: 0.1em; vertical-align: top; margin-left: 0.5em; }
+  .collezione__intro { grid-column: 9 / span 4; align-self: end; max-width: 34ch; color: var(--grafite); }
+
+  .filtri {
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+    padding: 1.25rem 0; margin-bottom: clamp(3rem, 6vw, 5rem);
+    border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea);
+  }
+  .filtro {
+    display: inline-flex; align-items: center; gap: 0.6em;
+    min-height: 2.75rem; padding: 0 1.1rem;
+    background: transparent; border: 1px solid var(--linea); border-radius: 999px; cursor: pointer;
+    font-size: var(--fs-etichetta); font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+    transition: background-color var(--dur-rapida) var(--ease-out), color var(--dur-rapida) var(--ease-out), border-color var(--dur-rapida) var(--ease-out);
+  }
+  .filtro span { font-family: var(--serif); font-style: italic; font-size: 1rem; letter-spacing: 0; opacity: 0.6; }
+  .filtro:hover { border-color: var(--inchiostro); }
+  .filtro[aria-pressed='true'] { background: var(--inchiostro); color: var(--carta); border-color: var(--inchiostro); }
+
+  .pezzi {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: clamp(1.25rem, 3vw, 3rem); row-gap: clamp(3rem, 6vw, 6rem);
+    align-items: start;
+  }
+  /* la colonna centrale scende: un allestimento, non una tabella */
+  .pezzo:nth-child(3n + 2 of :not([hidden])) { margin-top: clamp(3rem, 9vw, 9rem); }
+  .pezzo[hidden] { display: none; }
+
+  .pezzo__link { display: grid; gap: 1rem; text-decoration: none; color: inherit; }
+  .pezzo__parete {
+    position: relative;
+    display: grid; place-items: center;
+    aspect-ratio: 4 / 5;
+    padding: 13%;
+    background: var(--carta-2);
+    overflow: hidden;
+    transition: background-color var(--dur-lenta) var(--ease-out);
+  }
+  .pezzo__parete--larga { padding: 9%; }
+  .pezzo__parete :global(picture) { display: contents; }
+  .pezzo__parete :global(img) {
+    width: auto; height: auto; max-width: 100%; max-height: 100%;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18), 0 22px 40px -18px rgba(0, 0, 0, 0.55);
+    transition: transform var(--dur-lenta) var(--ease-out), box-shadow var(--dur-lenta) var(--ease-out);
+  }
+  .pezzo__link:hover .pezzo__parete, .pezzo__link:focus-visible .pezzo__parete { background: var(--fondo); }
+  .pezzo__link:hover :global(img), .pezzo__link:focus-visible :global(img) {
+    transform: scale(1.045);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25), 0 40px 60px -24px rgba(0, 0, 0, 0.7);
+  }
+
+  .pezzo__dida {
+    display: grid; grid-template-columns: auto 1fr auto; align-items: baseline; gap: 0.9rem;
+    padding-top: 0.9rem; border-top: 1px solid var(--linea);
+  }
+  .pezzo__num { font-family: var(--serif); font-style: italic; font-size: 1.25rem; line-height: 1; color: var(--grafite); }
+  .pezzo__titolo { font-family: var(--serif); font-size: clamp(1.375rem, 1.1rem + 0.8vw, 1.875rem); line-height: 1.05; }
+  .pezzo__cat { color: var(--grafite); }
+
+  @media (max-width: 1100px) {
+    .collezione__testa h2 { grid-column: 1 / -1; }
+    .collezione__intro { grid-column: 1 / span 9; }
+    .pezzi { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .pezzo:nth-child(3n + 2 of :not([hidden])) { margin-top: 0; }
+    .pezzo:nth-child(2n of :not([hidden])) { margin-top: clamp(3rem, 9vw, 6rem); }
+  }
+  @media (max-width: 700px) {
+    .collezione__intro { grid-column: 1 / -1; }
+    .filtri { flex-wrap: nowrap; overflow-x: auto; margin-left: calc(-1 * var(--gutter)); margin-right: calc(-1 * var(--gutter)); padding-left: var(--gutter); padding-right: var(--gutter); scrollbar-width: none; }
+    .filtro { flex: none; }
+    .pezzi { column-gap: 0.9rem; row-gap: 2.5rem; }
+    .pezzo__dida { grid-template-columns: auto 1fr; gap: 0.25rem 0.6rem; }
+    .pezzo__cat { grid-column: 2; }
+    .pezzo__titolo { font-size: 1.25rem; }
+  }
+</style>
+
+<script>
+  import { initMovimento, riduci } from '../scripts/movimento';
+  import { Flip } from 'gsap/Flip';
+
+  const sez = document.querySelector<HTMLElement>('[data-collezione]');
+  if (sez) {
+    const { gsap, ScrollTrigger } = initMovimento();
+    gsap.registerPlugin(Flip);
+    const pezzi = [...sez.querySelectorAll<HTMLElement>('[data-pezzo]')];
+    const bottoni = [...sez.querySelectorAll<HTMLButtonElement>('[data-filtro]')];
+    const stato = sez.querySelector<HTMLElement>('[data-filtri-stato]')!;
+    const fermo = riduci();
+
+    // Comparsa: la parete si apre dal basso, l'opera sale
+    if (!fermo) {
+      gsap.set(pezzi, { clipPath: 'inset(12% 0% 0% 0%)', opacity: 0, y: 40 });
+      ScrollTrigger.batch(pezzi, {
+        start: 'top 92%', once: true,
+        onEnter: (els) => gsap.to(els, { clipPath: 'inset(0% 0% 0% 0%)', opacity: 1, y: 0, duration: 1.1, ease: 'expo.out', stagger: 0.09, clearProps: 'clipPath,transform' }),
+      });
+    }
+
+    const lista = sez.querySelector<HTMLElement>('[data-pezzi]')!;
+    const filtra = (filtro: string) => {
+      bottoni.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.filtro === filtro)));
+      // da qui in poi niente comparse a scorrimento: le opere si vedono tutte e si riordinano
+      if (!fermo) gsap.set(pezzi, { opacity: 1, y: 0, clipPath: 'none' });
+      const prima = fermo ? null : Flip.getState(pezzi);
+      const hPrima = lista.offsetHeight;
+      let visibili = 0;
+      pezzi.forEach((p) => {
+        const si = filtro === 'tutte' || p.dataset.categoria === filtro;
+        p.hidden = !si;
+        if (si) visibili++;
+      });
+      const nome = bottoni.find((b) => b.dataset.filtro === filtro)?.firstChild?.textContent?.trim() ?? '';
+      stato.textContent = `${visibili} opere: ${nome}`;
+      if (prima) {
+        // durante il riordino le opere escono dal flusso: l'altezza della griglia la guidiamo noi
+        const hDopo = lista.offsetHeight;
+        gsap.fromTo(lista, { height: hPrima }, { height: hDopo, duration: 0.75, ease: 'power3.inOut', clearProps: 'height' });
+        Flip.from(prima, {
+          duration: 0.75, ease: 'power3.inOut', absolute: true, nested: true,
+          onEnter: (els) => gsap.fromTo(els, { opacity: 0, scale: 0.94 }, { opacity: 1, scale: 1, duration: 0.6, ease: 'power3.out', clearProps: 'transform' }),
+          onLeave: (els) => gsap.to(els, { opacity: 0, scale: 0.94, duration: 0.35, ease: 'power2.in' }),
+          onComplete: () => ScrollTrigger.refresh(),
+        });
+      } else {
+        ScrollTrigger.refresh();
+      }
+    };
+    bottoni.forEach((b) => b.addEventListener('click', () => filtra(b.dataset.filtro!)));
+
+    // Passaggio verso la pagina dell'opera: l'immagine cliccata "vola" nella pagina nuova
+    window.addEventListener('pageswap', (e: Event) => {
+      const ev = e as Event & { viewTransition?: unknown; activation?: { entry?: { url: string } } };
+      if (!ev.viewTransition || !ev.activation?.entry) return;
+      const slug = new URL(ev.activation.entry.url).pathname.match(/^\/opere\/([^/.]+)/)?.[1];
+      if (!slug) return;
+      const visibili = [...document.querySelectorAll<HTMLElement>(`[data-vt="${slug}"]`)].filter((el) => {
+        const r = el.getBoundingClientRect();
+        return r.bottom > 0 && r.top < innerHeight && getComputedStyle(el).visibility !== 'hidden';
+      });
+      if (!visibili[0]) return;
+      const el = visibili[0];
+      el.style.viewTransitionName = 'opera-attiva';
+      // se si torna indietro dalla cache del browser, la pagina deve essere di nuovo "pulita"
+      addEventListener('pageshow', () => { el.style.viewTransitionName = ''; }, { once: true });
+    });
+  }
+</script>

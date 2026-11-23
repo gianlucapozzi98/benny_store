@@ -5,18 +5,18 @@ const manca = 'da confermare';
 ---
 <footer class="piede-sito">
   <div class="piede-sito__cta">
-    <p class="etichetta">Hai visto qualcosa che ti piace?</p>
+    <p class="piede-sito__domanda">Hai visto un'opera <em>che ti piace?</em></p>
     <div class="piede-sito__bottoni">
-      <a class="btn" href={negozio.telefono.href}>Chiamaci · {negozio.telefono.vista}</a>
-      <a class="btn btn--vuoto" href={`mailto:${negozio.email}`}>Scrivici</a>
+      <a class="btn btn--chiaro" href={negozio.telefono.href}>Chiamaci · {negozio.telefono.vista}</a>
+      <a class="btn btn--chiaro btn--vuoto" href={`mailto:${negozio.email}`}>Scrivici</a>
     </div>
   </div>
 
-  <p class="piede-sito__nome" aria-hidden="true">Benny<br />Store</p>
+  <p class="piede-sito__nome" aria-hidden="true"><span>Benny</span> <em>Store</em></p>
 
   <div class="piede-sito__griglia">
     <div>
-      <h2 class="etichetta">Negozio</h2>
+      <h2 class="etichetta">Galleria</h2>
       <address>
         <a class="link" href={mapsHref} target="_blank" rel="noopener">{negozio.indirizzo.via}<br />{negozio.indirizzo.citta} ({negozio.indirizzo.provincia})<span class="sr-only"> (apre Google Maps in una nuova scheda)</span></a>
       </address>
@@ -54,23 +54,24 @@ const manca = 'da confermare';
     position: relative; overflow: hidden;
     padding: clamp(4rem, 10vw, 8rem) var(--gutter) 2rem;
     background: var(--sala); color: var(--avorio);
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
   }
-  .piede-sito__cta { display: grid; gap: 1rem; justify-items: start; max-width: var(--max); margin: 0 auto; }
-  .piede-sito__cta .etichetta { color: var(--salvia); }
+  .piede-sito :focus-visible { outline-color: var(--indaco-luce); }
+  .piede-sito__cta { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 2rem; max-width: var(--max); margin: 0 auto; }
+  .piede-sito__domanda { font-family: var(--serif); font-size: clamp(2.25rem, 1.4rem + 3.5vw, 4.75rem); line-height: 1; max-width: 14ch; }
+  .piede-sito__domanda em { color: var(--nebbia); }
   .piede-sito__bottoni { display: flex; flex-wrap: wrap; gap: 0.6rem; }
   .piede-sito__nome {
-    margin: clamp(2rem, 6vw, 4rem) 0;
-    font-size: clamp(5rem, 24vw, 26rem); font-weight: 900; line-height: 0.78;
-    letter-spacing: -0.06em; text-transform: uppercase;
-    color: transparent; -webkit-text-stroke: 1px rgba(244, 242, 236, 0.35);
-    background: linear-gradient(180deg, var(--avorio) 0 45%, transparent 45%);
-    -webkit-background-clip: text; background-clip: text;
-    user-select: none;
+    margin: clamp(3rem, 8vw, 6rem) 0 clamp(2rem, 6vw, 4rem);
+    display: flex; justify-content: space-between; gap: 0.1em;
+    font-family: var(--serif); font-size: clamp(5rem, 21.5vw, 30rem); line-height: 0.78; letter-spacing: -0.04em;
+    color: transparent; -webkit-text-stroke: 1px rgba(244, 242, 236, 0.4);
+    user-select: none; white-space: nowrap;
   }
+  .piede-sito__nome em { color: var(--avorio); -webkit-text-stroke: 0; }
   .piede-sito__griglia {
     max-width: var(--max); margin: 0 auto;
     display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2rem;
+    padding-top: 2rem; border-top: 1px solid rgba(244, 242, 236, 0.16);
     font-size: 0.9375rem; line-height: 1.7;
   }
   .piede-sito__griglia h2 { color: var(--nebbia); margin-bottom: 0.6rem; }
@@ -79,6 +80,10 @@ const manca = 'da confermare';
   .piede-sito__pref { background: none; border: 0; padding: 0; cursor: pointer; font-size: inherit; }
   .piede-sito__dati .da-confermare { font-size: 0.8125rem; }
   .piede-sito__firma { max-width: var(--max); margin: 3rem auto 0; color: var(--nebbia); font-size: 0.8125rem; }
-  @media (max-width: 860px) { .piede-sito__griglia { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 860px) {
+    .piede-sito__griglia { grid-template-columns: 1fr 1fr; }
+    .piede-sito__nome { flex-direction: column; font-size: 34vw; }
+    .piede-sito__nome em { align-self: flex-end; }
+  }
   @media (max-width: 480px) { .piede-sito__griglia { grid-template-columns: 1fr; } }
 </style>

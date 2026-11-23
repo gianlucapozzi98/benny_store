@@ -1,0 +1,77 @@
+{
+  "ombrello-rosso": {
+    "accento": "#ce2e20",
+    "larghezza": 1638,
+    "altezza": 2000
+  },
+  "sguardo-in-alto": {
+    "accento": "#719544",
+    "larghezza": 1546,
+    "altezza": 2000
+  },
+  "ritratto-in-giallo": {
+    "accento": "#f4c103",
+    "larghezza": 1274,
+    "altezza": 1273
+  },
+  "volto-rosa": {
+    "accento": "#1b9850",
+    "larghezza": 927,
+    "altezza": 1357
+  },
+  "cupola-e-simboli": {
+    "accento": "#268acc",
+    "larghezza": 2000,
+    "altezza": 1421
+  },
+  "pannocchie": {
+    "accento": "#c1952b",
+    "larghezza": 813,
+    "altezza": 829
+  },
+  "il-chitarrista": {
+    "accento": "#dac6ab",
+    "larghezza": 1400,
+    "altezza": 2000
+  },
+  "cerchi-blu": {
+    "accento": "#334678",
+    "larghezza": 711,
+    "altezza": 792
+  },
+  "rosso-nel-nero": {
+    "accento": "#5d302b",
+    "larghezza": 792,
+    "altezza": 1049
+  },
+  "manifesti-strappati": {
+    "accento": "#cb763d",
+    "larghezza": 1519,
+    "altezza": 1387
+  },
+  "gocce": {
+    "accento": "#d15162",
+    "larghezza": 949,
+    "altezza": 1301
+  },
+  "donna-in-rosa": {
+    "accento": "#906936",
+    "larghezza": 470,
+    "altezza": 736
+  },
+  "figura-su-arancio": {
+    "accento": "#a2713e",
+    "larghezza": 490,
+    "altezza": 661
+  },
+  "decappottabile-rossa": {
+    "accento": "#ba352e",
+    "larghezza": 523,
+    "altezza": 518
+  },
+  "scooter-a-pois": {
+    "accento": "#2a518e",
+    "larghezza": 566,
+    "altezza": 552
+  }
+}

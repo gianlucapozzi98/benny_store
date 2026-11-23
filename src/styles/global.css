@@ -1,6 +1,7 @@
 /* ==========================================================================
-   Benny Store — token e base
-   Colori campionati dalle foto del negozio (vedi IMMAGINI.md / CONCEPT.md)
+   Benny Store — galleria d'arte. Token e base.
+   Carta calda per le sale, antracite delle pareti vere per i momenti scuri,
+   un serif da catalogo per i titoli e Montserrat (il carattere del biglietto) per il resto.
    ========================================================================== */
 
 @font-face {
@@ -14,47 +15,71 @@
     U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215,
     U+FEFF, U+FFFD;
 }
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('/fonts/instrument-serif-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-display: swap;
+  font-weight: 400;
+  src: url('/fonts/instrument-serif-latin-400-italic.woff2') format('woff2');
+}
 
 :root {
   /* Colore */
-  --sala: #16171a;        /* parete antracite in ombra: fondo */
+  --carta: #efebe3;       /* fondo delle sale: carta calda */
+  --carta-2: #e5dfd3;
+  --inchiostro: #16171a;  /* testo su carta */
+  --grafite: #55565c;     /* testo secondario su carta (6:1) */
+  --linea: rgba(22, 23, 26, 0.16);
+  --sala: #16171a;        /* parete antracite in ombra */
   --sala-2: #1d1e22;
   --parete: #3e3f44;      /* parete antracite in luce */
   --avorio: #f4f2ec;
   --nebbia: #a3a3aa;
   --salvia: #c9d6ce;
-  --salvia-scuro: #a9b9ae;
-  --inchiostro: #16171a;  /* testo su chiaro */
   --indaco: #3d40c4;
   --indaco-luce: #9da0f5;
-  --led: #e5383f;
+  --led: #e5383f;         /* la striscia LED del soffitto: un solo uso per schermata */
   --miele: #d99a5b;
 
   /* Tipografia */
+  --serif: 'Instrument Serif', 'Times New Roman', Georgia, serif;
   --font: 'Montserrat', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --fs-corpo: clamp(1.125rem, 1.05rem + 0.3vw, 1.25rem);
+  --fs-corpo: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem);
   --fs-piccolo: 0.875rem;
-  --fs-etichetta: 0.75rem;
-  --fs-h3: clamp(1.375rem, 1.1rem + 1vw, 2rem);
-  --fs-h2: clamp(2.5rem, 1rem + 6vw, 7.5rem);
-  --fs-gigante: clamp(5.5rem, 12.6vw, 16rem);
-  --track-largo: 0.24em;
-  --track-stretto: -0.045em;
+  --fs-etichetta: 0.6875rem;
+  --fs-h3: clamp(1.75rem, 1.2rem + 1.6vw, 2.75rem);
+  --fs-h2: clamp(3.5rem, 1.5rem + 8vw, 10rem);
+  --track-largo: 0.2em;
 
   /* Movimento: tutte le microinterazioni usano queste curve e durate */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --dur-rapida: 0.2s;
-  --dur-media: 0.45s;
+  --dur-media: 0.5s;
   --dur-lenta: 0.9s;
 
   /* Spazi */
   --gutter: clamp(1rem, 0.5rem + 2.4vw, 2.5rem);
   --nav-h: 4.5rem;
-  --max: 90rem;
+  --max: 96rem;
 
-  color-scheme: dark;
+  color-scheme: light;
 }
+
+/* Passaggio morbido tra le pagine (dove il browser lo supporta) */
+@view-transition { navigation: auto; }
+::view-transition-old(root) { animation: vt-esce 0.35s var(--ease-in-out) both; }
+::view-transition-new(root) { animation: vt-entra 0.55s var(--ease-out) 0.1s both; }
+::view-transition-group(opera-attiva) { animation-duration: 0.7s; animation-timing-function: var(--ease-in-out); }
+@keyframes vt-esce { to { opacity: 0; } }
+@keyframes vt-entra { from { opacity: 0; } }
 
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
@@ -64,8 +89,10 @@ html.lenis, html.lenis body { height: auto; }
 
 body {
   margin: 0;
-  background: var(--sala);
-  color: var(--avorio);
+  background-color: var(--carta);
+  /* grana della carta: rumore leggerissimo, nessuna immagine */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.09 0 0 0 0 0.08 0 0 0 0 0.07 0 0 0 0.07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  color: var(--inchiostro);
   font-family: var(--font);
   font-size: var(--fs-corpo);
   font-weight: 400;
@@ -81,12 +108,13 @@ h1, h2, h3, p { margin: 0; }
 
 :focus { outline: none; }
 :focus-visible {
-  outline: 2px solid var(--indaco-luce);
+  outline: 2px solid var(--indaco);
   outline-offset: 4px;
   border-radius: 2px;
 }
+.scuro :focus-visible { outline-color: var(--indaco-luce); }
 
-::selection { background: var(--indaco-luce); color: var(--sala); }
+::selection { background: var(--inchiostro); color: var(--carta); }
 
 .sr-only {
   position: absolute !important;
@@ -98,7 +126,7 @@ h1, h2, h3, p { margin: 0; }
 
 .salta {
   position: fixed; left: var(--gutter); top: 0.75rem; z-index: 100;
-  padding: 0.75rem 1rem; background: var(--avorio); color: var(--sala);
+  padding: 0.75rem 1rem; background: var(--inchiostro); color: var(--carta);
   font-weight: 700; text-decoration: none;
   transform: translateY(-200%);
   transition: transform var(--dur-rapida) var(--ease-out);
@@ -112,15 +140,23 @@ h1, h2, h3, p { margin: 0; }
   text-transform: uppercase;
 }
 
+/* Titoli da catalogo */
+.serif { font-family: var(--serif); font-weight: 400; letter-spacing: -0.01em; }
+.corsivo { font-family: var(--serif); font-style: italic; font-weight: 400; }
+.titolo-sezione {
+  font-family: var(--serif); font-style: italic; font-weight: 400;
+  font-size: var(--fs-h2); line-height: 0.86; letter-spacing: -0.02em;
+}
+
 /* Bottone: una sola famiglia, stessi tempi ovunque */
 .btn {
-  --btn-bg: var(--avorio);
-  --btn-fg: var(--sala);
+  --btn-bg: var(--inchiostro);
+  --btn-fg: var(--carta);
   display: inline-flex; align-items: center; justify-content: center; gap: 0.6em;
   min-height: 3rem; padding: 0 1.4rem;
   background: var(--btn-bg); color: var(--btn-fg);
   border: 1px solid var(--btn-bg); border-radius: 999px;
-  font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+  font-size: 0.75rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
   text-decoration: none; cursor: pointer; white-space: nowrap;
   transition: transform var(--dur-rapida) var(--ease-out),
               background-color var(--dur-rapida) var(--ease-out),
@@ -130,11 +166,11 @@ h1, h2, h3, p { margin: 0; }
 .btn:active { transform: scale(0.98); }
 .btn--vuoto { background: transparent; color: var(--btn-bg); }
 .btn--vuoto:hover { background: var(--btn-bg); color: var(--btn-fg); }
-
-
-.btn--piccolo { min-height: 2.75rem; padding: 0 1.1rem; font-size: 0.75rem; }
-.btn--indaco { --btn-bg: var(--indaco); --btn-fg: #fff; }
-.btn--scuro { --btn-bg: var(--inchiostro); --btn-fg: var(--avorio); }
+.btn--piccolo { min-height: 2.75rem; padding: 0 1.1rem; font-size: 0.6875rem; }
+.btn--chiaro { --btn-bg: var(--avorio); --btn-fg: var(--inchiostro); }
+.btn--scuro { --btn-bg: var(--inchiostro); --btn-fg: var(--carta); }
+.btn__freccia { transition: transform var(--dur-rapida) var(--ease-out); }
+.btn:hover .btn__freccia { transform: translateX(3px); }
 
 /* Link di testo */
 .link {
@@ -143,6 +179,15 @@ h1, h2, h3, p { margin: 0; }
 }
 .link:hover { text-decoration-thickness: 2px; }
 
+/* Link con riga che si disegna */
+.sottolinea { position: relative; text-decoration: none; }
+.sottolinea::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -0.15em; height: 1px;
+  background: currentColor; transform: scaleX(0); transform-origin: right;
+  transition: transform var(--dur-media) var(--ease-out);
+}
+.sottolinea:hover::after, .sottolinea:focus-visible::after { transform: scaleX(1); transform-origin: left; }
+
 /* Dato mancante: deve vedersi finché il cliente non lo fornisce */
 .da-confermare {
   display: inline-block; padding: 0 0.4em;
@@ -150,41 +195,31 @@ h1, h2, h3, p { margin: 0; }
   font-style: italic; opacity: 0.85;
 }
 
-/* Titoli di sezione */
+/* Sezioni */
 .sezione { position: relative; padding: clamp(5rem, 12vw, 10rem) var(--gutter); }
-.sezione__testa { max-width: var(--max); margin: 0 auto clamp(2.5rem, 6vw, 5rem); display: grid; gap: 1.25rem; }
-.sezione__titolo {
-  font-size: var(--fs-h2); font-weight: 900; line-height: 0.88;
-  letter-spacing: var(--track-stretto); text-transform: uppercase;
-}
-.sezione__intro { max-width: 46ch; color: var(--nebbia); }
-.chiaro { background: var(--salvia); color: var(--inchiostro); }
-.chiaro .sezione__intro { color: #3a3f3c; }
-.chiaro :focus-visible { outline-color: var(--indaco); }
-
-/* Pennellate del biglietto: rumore + velature, nessuna immagine */
-.pennellate {
-  background-color: var(--salvia);
-  background-image:
-    linear-gradient(100deg, rgba(255,255,255,0.35) 0 8%, transparent 22% 48%, rgba(255,255,255,0.28) 60%, transparent 76%),
-    linear-gradient(170deg, transparent 0 30%, rgba(169,185,174,0.45) 42%, transparent 58%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012 0.09' numOctaves='3' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
+.scuro { background-color: var(--sala); color: var(--avorio); }
 
 /* Comparsa morbida */
 .js [data-svela] { opacity: 0; transform: translateY(28px); transition: opacity var(--dur-lenta) var(--ease-out), transform var(--dur-lenta) var(--ease-out); }
 .js [data-svela].svelato { opacity: 1; transform: none; }
 
-/* Cursore (solo desktop) */
+/* Cursore (solo desktop): un punto, che diventa un cerchio con una parola sulle opere */
 .cursore {
   position: fixed; left: 0; top: 0; z-index: 95; pointer-events: none;
+  display: grid; place-items: center;
   width: 10px; height: 10px; margin: -5px 0 0 -5px; border-radius: 50%;
   background: #fff; mix-blend-mode: difference;
-  transition: width var(--dur-rapida) var(--ease-out), height var(--dur-rapida) var(--ease-out), margin var(--dur-rapida) var(--ease-out);
+  color: #000; font-size: 0.625rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;
+  transition: width var(--dur-media) var(--ease-out), height var(--dur-media) var(--ease-out),
+              margin var(--dur-media) var(--ease-out);
 }
+.cursore span { opacity: 0; transition: opacity var(--dur-rapida) var(--ease-out); white-space: nowrap; }
 .cursore--attivo { width: 42px; height: 42px; margin: -21px 0 0 -21px; }
+.cursore--testo { width: 92px; height: 92px; margin: -46px 0 0 -46px; }
+.cursore--testo span { opacity: 1; }
 
 @media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
   .js [data-svela] { opacity: 1; transform: none; }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

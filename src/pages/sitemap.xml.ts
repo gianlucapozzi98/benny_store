@@ -1,5 +1,7 @@
 import type { APIRoute } from 'astro';
-const pagine = ['/', '/privacy', '/termini', '/accessibilita'];
+import { opere } from '../data/opere';
+
+const pagine = ['/', ...opere.map((o) => `/opere/${o.slug}`), '/privacy', '/termini', '/accessibilita'];
 export const GET: APIRoute = ({ site }) => {
   const oggi = new Date().toISOString().slice(0, 10);
   const url = pagine.map((p) => `  <url><loc>${new URL(p, site)}</loc><lastmod>${oggi}</lastmod></url>`).join('\n');

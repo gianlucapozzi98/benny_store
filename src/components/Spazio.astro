@@ -1,0 +1,134 @@
+---
+// LO SPAZIO — la galleria vera: foto delle pareti sparse a diverse velocità,
+// in bianco e nero finché non arrivano al centro dello schermo. Poi i cinque reparti del biglietto.
+import { Picture } from 'astro:assets';
+import grafiche from '../assets/foto/negozio-parete-grafiche.jpg';
+import pop from '../assets/foto/negozio-parete-pop-wow.jpg';
+import classico from '../assets/foto/negozio-angolo-classico-vetrina.jpg';
+import led from '../assets/foto/negozio-parete-classico-led.jpg';
+import abiti from '../assets/foto/negozio-abbigliamento.jpg';
+
+const foto = [
+  { img: grafiche, dida: 'La parete delle grafiche', alt: 'Una parete del negozio con otto grafiche e collage colorati in cornici bianche, nere e argento', pos: 'f1', vel: -12 },
+  { img: pop, dida: 'La parete pop', alt: 'Parete pop art del negozio con la scritta WOW! e piccoli ritratti dai colori accesi', pos: 'f2', vel: 10 },
+  { img: classico, dida: 'Classici e vetrina', alt: 'Un angolo del negozio con quadri in cornici dorate, un cavalletto e una vetrina con oggetti da regalo', pos: 'f3', vel: -6 },
+  { img: led, dida: 'La luce rossa sul soffitto', alt: 'Parete di quadri figurativi e paesaggi in cornici dorate, sotto una luce rossa lungo il soffitto', pos: 'f4', vel: 16 },
+  { img: abiti, dida: 'Il reparto abbigliamento', alt: 'Il reparto abbigliamento: capi appesi su stender neri ai due lati della sala', pos: 'f5', vel: -10 },
+];
+const reparti = ["Quadri d'autore", 'Classico moderno', 'Pop art', 'Abbigliamento', 'Oggettistica e idee regalo'];
+---
+<section class="spazio scuro" id="spazio" aria-labelledby="spazio-titolo" data-spazio>
+  <div class="spazio__collage">
+    <header class="spazio__testa">
+      <p class="etichetta spazio__eti" data-svela>La galleria</p>
+      <h2 id="spazio-titolo" class="titolo-sezione" data-svela>Lo spazio.</h2>
+      <p class="spazio__testo" data-svela>
+        Pareti antracite, faretti puntati sulle opere e una striscia di luce rossa lungo il soffitto.
+        Benny Store è una galleria e un negozio: accanto ai quadri trovi abbigliamento, oggettistica e idee regalo.
+      </p>
+    </header>
+
+    {foto.map((f) => (
+      <figure class={`spazio__foto ${f.pos}`} data-foto data-vel={f.vel}>
+        <div class="spazio__cornice">
+          <Picture src={f.img} alt={f.alt} formats={['avif', 'webp']} widths={[360, 540, 800]} sizes="(max-width: 860px) 44vw, 26vw" loading="lazy" decoding="async" />
+        </div>
+        <figcaption class="etichetta">{f.dida}</figcaption>
+      </figure>
+    ))}
+  </div>
+
+  <div class="reparti">
+    <p class="etichetta reparti__eti">In negozio trovi</p>
+    <ol>
+      {reparti.map((r, i) => (
+        <li data-svela><span class="reparti__n">0{i + 1}</span><span class="reparti__nome">{r}</span></li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .spazio { position: relative; padding: clamp(6rem, 12vw, 10rem) var(--gutter) clamp(5rem, 10vw, 8rem); overflow: hidden; }
+
+  .spazio__collage {
+    position: relative; max-width: var(--max); margin: 0 auto;
+    display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter);
+    grid-auto-rows: auto;
+  }
+  .spazio__testa { grid-column: 5 / span 5; grid-row: 2; align-self: center; display: grid; gap: 1.5rem; padding: clamp(3rem, 8vw, 8rem) 0; z-index: 2; }
+  .spazio__eti { color: var(--nebbia); }
+  .spazio__testo { max-width: 36ch; font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem); line-height: 1.55; color: rgba(244, 242, 236, 0.82); }
+
+  .spazio__foto { margin: 0; display: grid; gap: 0.75rem; align-self: start; align-content: start; will-change: transform; }
+  .spazio__foto figcaption { color: var(--nebbia); }
+  .spazio__cornice { overflow: hidden; }
+  .spazio__cornice :global(img) {
+    width: 100%; height: auto; aspect-ratio: 3 / 4; object-fit: cover;
+    filter: grayscale(1) contrast(1.05) brightness(0.9);
+    transform: scale(1.08);
+    transition: filter 1.2s var(--ease-out), transform 1.6s var(--ease-out);
+  }
+  .spazio__foto.a-colori .spazio__cornice :global(img) { filter: none; transform: scale(1); }
+
+  .f1 { grid-column: 1 / span 4; grid-row: 1; }
+  .f2 { grid-column: 8 / span 3; grid-row: 1; margin-top: clamp(4rem, 12vw, 12rem); }
+  .f3 { grid-column: 1 / span 3; grid-row: 2 / span 2; margin-top: clamp(6rem, 16vw, 16rem); }
+  .f4 { grid-column: 10 / span 3; grid-row: 2 / span 2; margin-top: clamp(10rem, 24vw, 24rem); }
+  .f5 { grid-column: 5 / span 3; grid-row: 3; margin-top: 2rem; }
+
+  .reparti { max-width: var(--max); margin: clamp(5rem, 10vw, 9rem) auto 0; }
+  .reparti__eti { color: var(--nebbia); margin-bottom: 1.25rem; }
+  .reparti ol { list-style: none; margin: 0; padding: 0; border-top: 1px solid rgba(244, 242, 236, 0.18); }
+  .reparti li {
+    display: grid; grid-template-columns: 4rem 1fr; align-items: baseline;
+    padding: clamp(0.75rem, 1.5vw, 1.25rem) 0;
+    border-bottom: 1px solid rgba(244, 242, 236, 0.18);
+  }
+  .reparti__n { font-family: var(--serif); font-style: italic; font-size: 1.25rem; color: var(--nebbia); }
+  .reparti__nome {
+    font-family: var(--serif); font-size: clamp(2.25rem, 1.2rem + 4.5vw, 6.5rem); line-height: 1; letter-spacing: -0.02em;
+    transition: transform var(--dur-media) var(--ease-out), color var(--dur-media) var(--ease-out);
+  }
+  .reparti li:hover .reparti__nome { transform: translateX(1.5rem); font-style: italic; }
+  .reparti li:nth-child(-n + 3) .reparti__nome { color: var(--avorio); }
+  .reparti li:nth-child(n + 4) .reparti__nome { color: rgba(244, 242, 236, 0.6); }
+
+  @media (max-width: 860px) {
+    .spazio__collage { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 2rem; }
+    .spazio__testa { grid-column: 1 / -1; grid-row: 1; padding: 0 0 1rem; }
+    .f1, .f2, .f3, .f4, .f5 { grid-row: auto; margin-top: 0; }
+    .f1 { grid-column: 1; }
+    .f2 { grid-column: 2; margin-top: 5rem; }
+    .f3 { grid-column: 1; }
+    .f4 { grid-column: 2; margin-top: 5rem; }
+    .f5 { grid-column: 1; }
+    .reparti li { grid-template-columns: 2.5rem 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .spazio__cornice :global(img) { filter: none; transform: none; }
+  }
+</style>
+
+<script>
+  import { initMovimento, riduci } from '../scripts/movimento';
+  const sez = document.querySelector<HTMLElement>('[data-spazio]');
+  if (sez) {
+    const foto = [...sez.querySelectorAll<HTMLElement>('[data-foto]')];
+    if (riduci()) {
+      foto.forEach((f) => f.classList.add('a-colori'));
+    } else {
+      const { gsap, ScrollTrigger } = initMovimento();
+      const largo = matchMedia('(min-width: 861px)').matches;
+      foto.forEach((f) => {
+        // a colori quando la foto passa nel centro dello schermo
+        ScrollTrigger.create({ trigger: f, start: 'top 72%', end: 'bottom 28%', toggleClass: 'a-colori' });
+        // velocità diverse: il collage respira mentre scorri
+        if (largo) gsap.fromTo(f, { yPercent: Number(f.dataset.vel) }, {
+          yPercent: -Number(f.dataset.vel), ease: 'none',
+          scrollTrigger: { trigger: f, start: 'top bottom', end: 'bottom top', scrub: true },
+        });
+      });
+    }
+  }
+</script>

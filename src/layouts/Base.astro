@@ -10,10 +10,14 @@ interface Props {
   description: string;
   ingresso?: boolean;
   noindex?: boolean;
+  /** immagine social della pagina (URL assoluto o relativo al sito); predefinita: /og.jpg */
+  immagine?: { src: string; width: number; height: number; alt: string };
 }
-const { title, description, ingresso = false, noindex = false } = Astro.props;
+const { title, description, ingresso = false, noindex = false, immagine } = Astro.props;
 const canonical = new URL(Astro.url.pathname.replace(/\.html$/, '').replace(/\/index$/, '/'), Astro.site);
-const og = new URL('/og.jpg', Astro.site);
+const og = immagine
+  ? { ...immagine, src: new URL(immagine.src, Astro.site).href }
+  : { src: new URL('/og.jpg', Astro.site).href, width: 1200, height: 630, alt: 'La sala di Benny Store con quadri alle pareti antracite' };
 ---
 <!doctype html>
 <html lang="it">
@@ -23,9 +27,18 @@ const og = new URL('/og.jpg', Astro.site);
     <title>{title}</title>
     <meta name="description" content={description} />
     {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
-    <meta name="theme-color" content="#16171a" />
-    <script is:inline>document.documentElement.classList.add('js')</script>
+    <meta name="theme-color" content="#efebe3" />
+    <script is:inline>
+      document.documentElement.classList.add('js');
+      // L'ingresso con il contatore si vede una volta per visita, mai con movimento ridotto
+      try {
+        if (sessionStorage.getItem('bs-ingresso') || matchMedia('(prefers-reduced-motion: reduce)').matches)
+          document.documentElement.classList.add('senza-ingresso');
+      } catch (e) {}
+    </script>
     <link rel="preload" href="/fonts/montserrat-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/instrument-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/instrument-serif-latin-400-italic.woff2" as="font" type="font/woff2" crossorigin />
 
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
@@ -38,14 +51,14 @@ const og = new URL('/og.jpg', Astro.site);
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={og} />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="La sala di Benny Store con quadri alle pareti antracite" />
+    <meta property="og:image" content={og.src} />
+    <meta property="og:image:width" content={String(og.width)} />
+    <meta property="og:image:height" content={String(og.height)} />
+    <meta property="og:image:alt" content={og.alt} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={og} />
+    <meta name="twitter:image" content={og.src} />
     <slot name="head" />
   </head>
   <body>

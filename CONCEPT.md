@@ -1,5 +1,26 @@
 # Concept — Benny Store
 
+## v2 (novembre 2026) — "La galleria"
+
+Richiesta del cliente: il sito deve diventare una vera galleria d'arte, con le opere già presenti, e le immagini devono
+essere i quadri veri, non le foto dei quadri appesi al muro. Riferimenti indicati: lironmoran-interiors.com,
+recruit.pearl-idea.co.jp, paulkalkbrenner.net (presi per struttura e animazioni, non copiati).
+
+- **Le opere come protagoniste.** 15 quadri ritagliati e raddrizzati dalle foto (vedi `IMMAGINI.md`), ognuno con numero da catalogo e pagina propria.
+- **Ingresso** (da Liron Moran): contatore 0→100% e la striscia LED rossa del negozio come barra.
+- **La sala** (da Liron Moran): titolo gigante, opera al centro che cambia scorrendo, fondo che prende il colore dell'opera.
+- **Manifesto** (da Kalkbrenner): griglia numerata, righe giganti con piccole opere dentro le parole.
+- **Collezione** (da Pearl Idea e Kalkbrenner): carta calda, numeri corsivi "01", filtri per sezione con riordino animato.
+- **Pagina d'opera** (dalla galleria di Liron Moran): schermo diviso, numero gigante, precedente/successiva.
+- **Lo spazio** (da Pearl Idea): foto vere del negozio sparse, dal bianco e nero al colore.
+
+Restano dal concept v1: i colori campionati dalle foto (antracite, LED rosso), Montserrat del biglietto, nessun dato inventato
+sulle opere (i titoli sono descrittivi e lo diciamo), mappa solo con consenso, movimento ridotto rispettato.
+
+---
+
+## v1 — "Il pilastro" (storico)
+
 Emozione da ottenere: **sorpresa**, cioè scoprire qualcosa di unico che non sapevi di volere.
 
 ## Cosa dicono le foto (e perché cambia il seme)

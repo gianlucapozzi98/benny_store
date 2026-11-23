@@ -46,7 +46,7 @@
     max-width: 44rem; margin-left: auto;
     display: grid; gap: 1rem;
     padding: 1.25rem 3rem 1.25rem 1.25rem;
-    background: rgba(29, 30, 34, 0.9);
+    background: rgba(29, 30, 34, 0.94); color: var(--avorio);
     backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px;
     font-size: 0.9375rem; line-height: 1.5;
@@ -54,6 +54,8 @@
   }
   .cookie[hidden] { display: none; }
   .cookie a { color: var(--indaco-luce); }
+  .cookie .btn, .preferenze .btn { --btn-bg: var(--avorio); --btn-fg: var(--inchiostro); }
+  .cookie :focus-visible, .preferenze :focus-visible { outline-color: var(--indaco-luce); }
   .cookie__azioni { display: flex; flex-wrap: wrap; gap: 0.5rem; }
   @media (max-width: 480px) {
     .cookie { left: 0.75rem; right: 0.75rem; bottom: 0.75rem; padding: 1rem 2.75rem 1rem 1rem; font-size: 0.875rem; }

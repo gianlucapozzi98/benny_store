@@ -1,34 +1,63 @@
 ---
-// Caricamento d'ingresso: solo CSS, nessun JS, non blocca nulla.
-// 0–0,45 s  la striscia LED rossa (quella vera del soffitto) corre lungo il bordo alto
-// 0,3–1 s   le luci della sala si accendono (il velo scuro si dissolve)
-// Il contenuto è già nel DOM e dipinto sotto il velo: LCP non viene ritardato.
-// Con prefers-reduced-motion il velo non c'è.
+// Ingresso: un contatore da 0 a 100 mentre la striscia LED rossa del soffitto corre lungo il fondo,
+// poi il sipario sale e si entra nella sala. Una volta per visita, mai con movimento ridotto.
+// Tempi e uscita sono in CSS: anche senza JavaScript il sipario sparisce da solo dopo 1,6 s.
+// Il contenuto è già nel DOM e dipinto sotto: LCP non viene ritardato.
 ---
-<div class="ingresso" aria-hidden="true">
+<div class="ingresso" aria-hidden="true" data-ingresso>
+  <p class="ingresso__eti etichetta">Benny Store <span>—</span> Galleria d'arte</p>
+  <p class="ingresso__num"><span data-ingresso-num>0</span><small>%</small></p>
   <span class="ingresso__led"></span>
 </div>
+
+<script is:inline>
+  (function () {
+    var el = document.querySelector('[data-ingresso-num]');
+    if (!el || document.documentElement.classList.contains('senza-ingresso')) return;
+    var t0 = performance.now(), durata = 1050;
+    function passo(t) {
+      var p = Math.min(1, (t - t0) / durata);
+      var e = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+      el.textContent = String(Math.round(100 * e));
+      if (p < 1) requestAnimationFrame(passo);
+    }
+    requestAnimationFrame(passo);
+    try { sessionStorage.setItem('bs-ingresso', '1'); } catch (e) {}
+  })();
+</script>
 
 <style>
   .ingresso {
     position: fixed; inset: 0; z-index: 90;
+    display: grid; grid-template-rows: 1fr auto; align-items: end;
+    padding: var(--gutter);
+    background: var(--sala); color: var(--avorio);
     pointer-events: none;
-    background: radial-gradient(120% 80% at 50% 0%, rgba(8, 8, 10, 0.86), rgba(8, 8, 10, 0.97));
-    animation: luci-accese 0.7s var(--ease-in-out) 0.32s both;
+    animation: sipario 0.75s var(--ease-in-out) 1.15s both;
   }
+  :global(.senza-ingresso) .ingresso { display: none; }
+  .ingresso__eti { align-self: start; padding-top: 1.4rem; color: var(--nebbia); }
+  .ingresso__eti span { color: var(--led); }
+  .ingresso__num {
+    justify-self: end;
+    font-family: var(--serif); font-size: clamp(6rem, 22vw, 22rem); line-height: 0.8;
+    font-variant-numeric: tabular-nums; letter-spacing: -0.03em;
+    padding-bottom: 1.25rem;
+    animation: num-esce 0.5s var(--ease-in-out) 1.1s both;
+  }
+  .ingresso__num small { font-size: 0.35em; vertical-align: top; margin-left: 0.05em; }
   .ingresso__led {
-    position: absolute; left: 0; right: 0; top: 0; height: 3px;
+    position: absolute; left: var(--gutter); right: var(--gutter); bottom: calc(var(--gutter) * 0.75); height: 2px;
     background: var(--led);
-    box-shadow: 0 0 12px 2px rgba(229, 56, 63, 0.75), 0 0 48px 6px rgba(229, 56, 63, 0.35);
+    box-shadow: 0 0 12px 2px rgba(229, 56, 63, 0.7), 0 0 44px 6px rgba(229, 56, 63, 0.3);
     transform-origin: left;
-    animation: led 0.45s var(--ease-out) both;
+    animation: led 1.05s cubic-bezier(0.33, 0, 0.2, 1) both;
   }
   @keyframes led { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-  @keyframes luci-accese {
-    0% { opacity: 1; visibility: visible; }
-    100% { opacity: 0; visibility: hidden; }
+  @keyframes num-esce { to { transform: translateY(-30%); opacity: 0; } }
+  @keyframes sipario {
+    0% { clip-path: inset(0 0 0 0); visibility: visible; }
+    100% { clip-path: inset(0 0 100% 0); visibility: hidden; }
   }
-  @media (prefers-reduced-motion: reduce) {
-    .ingresso { display: none; }
-  }
+  @media (prefers-reduced-motion: reduce) { .ingresso { display: none; } }
 </style>

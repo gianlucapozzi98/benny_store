@@ -1,0 +1,193 @@
+---
+// LA PAGINA DI UN'OPERA — a sinistra il quadro sulla sua parete colorata, a destra la scheda.
+// Il numero da catalogo è gigante; si passa alla precedente/successiva anche con le frecce della tastiera.
+import Base from '../../layouts/Base.astro';
+import { Picture, getImage } from 'astro:assets';
+import { opere, categorie } from '../../data/opere';
+import { negozio, mailto } from '../../data/sito';
+
+export function getStaticPaths() {
+  return opere.map((o, i) => ({ params: { slug: o.slug }, props: { i } }));
+}
+const { i } = Astro.props;
+const n = opere.length;
+const o = opere[i];
+const prec = opere[(i - 1 + n) % n];
+const succ = opere[(i + 1) % n];
+const cat = categorie[o.categoria].nome;
+const social = await getImage({ src: o.img, width: 1200, format: 'jpg' });
+const chiedi = mailto(
+  `Informazioni su "${o.titolo}"`,
+  `Ciao Benny Store,\nvorrei qualche informazione sull'opera "${o.titolo}" (n. ${o.numero}, ${cat}) che ho visto sul vostro sito: artista, misure e prezzo.\n\nGrazie!`,
+);
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'VisualArtwork',
+  name: o.titolo,
+  description: o.descrizione,
+  artform: cat,
+  image: new URL(social.src, Astro.site).href,
+  url: new URL(`/opere/${o.slug}`, Astro.site).href,
+};
+---
+<Base
+  title={`${o.titolo} · ${cat} | Benny Store`}
+  description={`${o.descrizione} In galleria a Cesano Boscone: chiedici artista, misure e prezzo.`.slice(0, 155)}
+  immagine={{ src: social.src, width: Number(social.attributes.width ?? o.img.width), height: Number(social.attributes.height ?? o.img.height), alt: o.alt }}
+>
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(ld)} />
+  <script is:inline slot="head">
+    // Arrivando dalla collezione, l'opera cliccata "vola" in questa pagina (View Transitions tra documenti).
+    // Il nome si assegna solo in quel caso: tra due pagine d'opera basta la dissolvenza.
+    addEventListener('pagereveal', function (e) {
+      if (!e.viewTransition) return;
+      var da = window.navigation && navigation.activation && navigation.activation.from;
+      if (!da || new URL(da.url).pathname !== '/') return;
+      var f = document.querySelector('[data-quadro-pagina]');
+      if (!f) return;
+      f.style.viewTransitionName = 'opera-attiva';
+      var togli = function () { f.style.viewTransitionName = ''; };
+      e.viewTransition.finished.then(togli, togli);
+    });
+  </script>
+
+  <article class="opera" style={`--fondo:${o.fondo}`} data-opera>
+    <div class="opera__parete">
+      <figure class:list={['opera__quadro', { 'opera__quadro--largo': o.orizzontale }]} style={`--r:${(o.img.width / o.img.height).toFixed(3)}`} data-quadro-pagina>
+        <Picture
+          class="opera__img"
+          src={o.img} alt={o.alt} formats={['avif', 'webp']}
+          widths={[480, 800, 1200, 1600]} sizes="(max-width: 900px) 84vw, 50vw"
+          loading="eager" fetchpriority="high" decoding="async"
+        />
+      </figure>
+      <p class="opera__parete-eti etichetta" aria-hidden="true">Benny Store · Sala {o.numero}</p>
+    </div>
+
+    <div class="opera__scheda">
+      <a class="opera__torna sottolinea" href="/#collezione"><span aria-hidden="true">←</span> La collezione</a>
+
+      <div class="opera__testa" data-entra>
+        <p class="opera__num" aria-label={`Opera ${Number(o.numero)} di ${n}`}>{o.numero}<span>/ {String(n).padStart(2, '0')}</span></p>
+        <p class="etichetta opera__cat">{cat}</p>
+        <h1 class="opera__titolo">{o.titolo}</h1>
+        <p class="opera__supporto">{o.supporto}</p>
+      </div>
+
+      <p class="opera__descr" data-entra>{o.descrizione}</p>
+
+      <div class="opera__chiedi" data-entra>
+        <p class="opera__nota">Il titolo è nostro, per riconoscerla. Artista, tecnica, misure e prezzo: chiedili a noi.</p>
+        <div class="opera__cta">
+          <a class="btn" href={chiedi}>Chiedi di quest'opera</a>
+          <a class="btn btn--vuoto" href={negozio.telefono.href}>Chiamaci</a>
+        </div>
+      </div>
+
+      <nav class="opera__nav" aria-label="Altre opere">
+        <a class="opera__vai" href={`/opere/${prec.slug}`} rel="prev" data-prec>
+          <span class="etichetta"><span aria-hidden="true">←</span> Precedente</span>
+          <span class="opera__vai-titolo">{prec.titolo}</span>
+        </a>
+        <a class="opera__vai opera__vai--succ" href={`/opere/${succ.slug}`} rel="next" data-succ>
+          <span class="opera__mini" aria-hidden="true"><Picture src={succ.img} alt="" formats={['avif', 'webp']} widths={[120, 240]} sizes="4rem" loading="lazy" /></span>
+          <span>
+            <span class="etichetta">Successiva <span aria-hidden="true">→</span></span>
+            <span class="opera__vai-titolo">{succ.titolo}</span>
+          </span>
+        </a>
+      </nav>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .opera {
+    display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    min-height: 100svh;
+  }
+  .opera__parete {
+    position: sticky; top: 0; height: 100svh;
+    display: grid; place-items: center;
+    padding: calc(var(--nav-h) + 1rem) clamp(2rem, 6vw, 6rem) 3.5rem;
+    background:
+      radial-gradient(60% 50% at 50% 40%, rgba(255, 240, 220, 0.14), transparent 70%),
+      var(--fondo);
+    color: var(--avorio);
+  }
+  .opera__quadro {
+    margin: 0;
+    width: min(100%, calc(var(--r) * (100svh - var(--nav-h) - 7rem)));
+    aspect-ratio: var(--r);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 50px 90px -40px rgba(0, 0, 0, 0.8);
+  }
+  .opera__quadro :global(picture), .opera__quadro :global(img) { width: 100%; height: 100%; }
+  .opera__parete-eti { position: absolute; left: clamp(1.25rem, 3vw, 2.5rem); bottom: 1.4rem; color: rgba(244, 242, 236, 0.6); }
+
+  .opera__scheda {
+    display: flex; flex-direction: column; gap: clamp(1.75rem, 3.5vw, 2.75rem);
+    padding: calc(var(--nav-h) + 1.5rem) clamp(1.25rem, 4vw, 4rem) clamp(2rem, 4vw, 3rem);
+  }
+  .opera__torna { align-self: flex-start; font-size: var(--fs-etichetta); font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; padding: 0.5rem 0; }
+
+  .opera__testa { display: grid; gap: 0.75rem; }
+  .opera__num {
+    display: flex; align-items: flex-start; gap: 0.5rem;
+    font-family: var(--serif); font-style: italic; font-size: clamp(6rem, 4rem + 8vw, 13rem); line-height: 0.8; letter-spacing: -0.03em;
+  }
+  .opera__num span { font-style: normal; font-size: 1.125rem; letter-spacing: 0; color: var(--grafite); margin-top: 0.4rem; }
+  .opera__cat { color: var(--grafite); margin-top: 1rem; }
+  .opera__titolo { font-family: var(--serif); font-weight: 400; font-size: clamp(2.75rem, 1.5rem + 4vw, 5.5rem); line-height: 0.95; letter-spacing: -0.02em; }
+  .opera__supporto { font-size: 0.9375rem; font-weight: 600; }
+
+  .opera__descr { max-width: 40ch; font-size: clamp(1.125rem, 1rem + 0.4vw, 1.3125rem); line-height: 1.6; }
+
+  .opera__chiedi { display: grid; gap: 1.25rem; padding: 1.5rem 0; border-top: 1px solid var(--linea); border-bottom: 1px solid var(--linea); }
+  .opera__nota { font-size: 0.9375rem; color: var(--grafite); max-width: 44ch; }
+  .opera__cta { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+
+  .opera__nav { margin-top: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .opera__vai { display: grid; gap: 0.4rem; align-content: start; padding: 0.5rem 0; text-decoration: none; }
+  .opera__vai .etichetta { color: var(--grafite); }
+  .opera__vai-titolo { font-family: var(--serif); font-size: 1.5rem; line-height: 1.1; transition: transform var(--dur-media) var(--ease-out); display: inline-block; }
+  .opera__vai:hover .opera__vai-titolo { transform: translateX(-4px); font-style: italic; }
+  .opera__vai--succ { grid-template-columns: auto 1fr; align-items: center; gap: 1rem; justify-self: end; text-align: right; }
+  .opera__vai--succ > span:last-child { display: grid; gap: 0.4rem; }
+  .opera__vai--succ:hover .opera__vai-titolo { transform: translateX(4px); }
+  .opera__mini { display: block; width: 4rem; height: 5rem; overflow: hidden; background: var(--carta-2); }
+  .opera__mini :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform var(--dur-media) var(--ease-out); }
+  .opera__vai--succ:hover .opera__mini :global(img) { transform: scale(1.1); }
+
+  @media (max-width: 900px) {
+    .opera { grid-template-columns: 1fr; }
+    .opera__parete { position: relative; height: auto; min-height: 78svh; padding: calc(var(--nav-h) + 1rem) var(--gutter) 3.5rem; }
+    .opera__quadro { width: min(100%, calc(var(--r) * 62svh)); }
+    .opera__scheda { padding-top: 2rem; }
+    .opera__num { font-size: clamp(5rem, 26vw, 8rem); }
+  }
+  @media (max-width: 480px) {
+    .opera__nav { grid-template-columns: 1fr; }
+    .opera__vai--succ { justify-self: stretch; grid-template-columns: 1fr auto; text-align: left; }
+    .opera__vai--succ .opera__mini { order: 2; }
+  }
+</style>
+
+<script>
+  import { initMovimento, riduci } from '../../scripts/movimento';
+  const pagina = document.querySelector<HTMLElement>('[data-opera]');
+  if (pagina) {
+    // Frecce della tastiera: opera precedente / successiva
+    document.addEventListener('keydown', (e) => {
+      if (e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return;
+      if ((e.target as HTMLElement).closest('input, textarea, select, [contenteditable], dialog[open]')) return;
+      const dove = e.key === 'ArrowLeft' ? '[data-prec]' : e.key === 'ArrowRight' ? '[data-succ]' : null;
+      const a = dove && document.querySelector<HTMLAnchorElement>(dove);
+      if (a) location.href = a.href;
+    });
+
+    if (!riduci()) {
+      const { gsap } = initMovimento();
+      gsap.from(pagina.querySelectorAll('[data-entra]'), { y: 26, opacity: 0, duration: 1, ease: 'expo.out', stagger: 0.08, delay: 0.15 });
+    }
+  }
+</script>

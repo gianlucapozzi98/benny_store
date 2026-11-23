@@ -1,0 +1,110 @@
+---
+// IL MANIFESTO — quattro righe giganti con dentro piccole opere, su una griglia numerata.
+// Scorrendo le righe scivolano in versi opposti fino ad allinearsi.
+import { Picture } from 'astro:assets';
+import { nelTesto, opere, categorie } from '../data/opere';
+const [a, b, c] = nelTesto;
+---
+<section class="manifesto" aria-labelledby="manifesto-titolo">
+  <div class="manifesto__griglia" aria-hidden="true">
+    {['01', '02', '03', '04', '05', '06'].map((n) => <span>{n}</span>)}
+  </div>
+
+  <h2 id="manifesto-titolo" class="sr-only">Quadri d'autore, pop art, grafiche, materici, classici e disegni: da vedere dal vivo.</h2>
+  <div class="manifesto__testo" aria-hidden="true">
+    <span class="riga" data-riga="1">Quadri <a class="mini" href={`/opere/${a.slug}`} tabindex="-1" aria-hidden="true"><Picture src={a.img} alt="" formats={['avif', 'webp']} widths={[160, 320]} sizes="12rem" loading="lazy" /></a> <em>d'autore,</em></span>
+    <span class="riga" data-riga="-1">pop art <i class="punto" aria-hidden="true"></i> grafiche <i class="punto" aria-hidden="true"></i> <em>materici,</em></span>
+    <span class="riga" data-riga="1"><em>classici</em> <a class="mini" href={`/opere/${b.slug}`} tabindex="-1" aria-hidden="true"><Picture src={b.img} alt="" formats={['avif', 'webp']} widths={[160, 320]} sizes="12rem" loading="lazy" /></a> e disegni</span>
+    <span class="riga" data-riga="-1">da vedere <a class="mini" href={`/opere/${c.slug}`} tabindex="-1" aria-hidden="true"><Picture src={c.img} alt="" formats={['avif', 'webp']} widths={[160, 320]} sizes="12rem" loading="lazy" /></a> <em>dal vivo.</em></span>
+  </div>
+
+  <div class="manifesto__piede">
+    <p class="manifesto__intro" data-svela>
+      Benny Store è una galleria d'arte a Cesano Boscone. Qui trovi una parte delle opere appese alle nostre pareti:
+      le altre, e i dettagli di ognuna, ti aspettano in via delle Betulle.
+    </p>
+    <dl class="manifesto__numeri" data-svela>
+      <div><dt class="etichetta">Opere online</dt><dd>{opere.length}</dd></div>
+      <div><dt class="etichetta">Sezioni</dt><dd>{Object.keys(categorie).length}</dd></div>
+      <div><dt class="etichetta">Reparti in negozio</dt><dd>5</dd></div>
+    </dl>
+  </div>
+</section>
+
+<style>
+  .manifesto { position: relative; padding: clamp(6rem, 14vw, 12rem) 0 clamp(5rem, 10vw, 9rem); overflow: hidden; }
+
+  /* griglia sottile a 6 colonne con i numeri, come un foglio di catalogo */
+  .manifesto__griglia {
+    position: absolute; inset: 0; pointer-events: none;
+    display: grid; grid-template-columns: repeat(6, 1fr);
+    padding: 0 var(--gutter);
+  }
+  .manifesto__griglia span {
+    border-left: 1px solid var(--linea);
+    padding: clamp(2rem, 5vw, 4rem) 0 0 0.6rem;
+    font-size: var(--fs-etichetta); font-weight: 600; letter-spacing: 0.1em; color: var(--grafite);
+  }
+  .manifesto__griglia span:last-child { border-right: 1px solid var(--linea); }
+
+  .manifesto__testo {
+    position: relative;
+    display: grid;
+    font-family: var(--font); font-weight: 800; text-transform: uppercase;
+    font-size: clamp(2.4rem, 8.4vw, 10.5rem); line-height: 0.98; letter-spacing: -0.045em;
+  }
+  .riga {
+    display: flex; align-items: center; justify-content: center; gap: 0.22em;
+    white-space: nowrap;
+    padding: 0.06em 0;
+    border-bottom: 1px solid var(--linea);
+    will-change: transform;
+  }
+  .riga:first-child { border-top: 1px solid var(--linea); }
+  .riga em { font-family: var(--serif); font-style: italic; font-weight: 400; text-transform: none; letter-spacing: -0.02em; font-size: 1.12em; }
+  .punto { display: inline-block; width: 0.55em; height: 0.55em; border-radius: 50%; background: currentColor; }
+  .riga .punto:first-of-type { background: var(--led); }
+
+  .mini {
+    display: inline-block; height: 0.8em; flex: none;
+    box-shadow: 0 10px 24px -12px rgba(0, 0, 0, 0.5);
+    transition: transform var(--dur-media) var(--ease-out);
+  }
+  .mini:hover { transform: rotate(-3deg) scale(1.08); }
+  .mini :global(picture), .mini :global(img) { height: 100%; width: auto; }
+
+  .manifesto__piede {
+    position: relative;
+    display: grid; grid-template-columns: repeat(6, 1fr);
+    padding: clamp(3rem, 7vw, 6rem) var(--gutter) 0;
+  }
+  .manifesto__intro { grid-column: 4 / span 3; padding-left: 0.6rem; max-width: 34ch; font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem); line-height: 1.5; }
+  .manifesto__numeri { grid-column: 1 / span 3; grid-row: 1; display: flex; gap: clamp(1.5rem, 4vw, 4rem); margin: 0; padding-left: 0.6rem; }
+  .manifesto__numeri dt { color: var(--grafite); }
+  .manifesto__numeri dd { margin: 0.25rem 0 0; font-family: var(--serif); font-style: italic; font-size: clamp(3rem, 2rem + 3vw, 5.5rem); line-height: 1; }
+
+  @media (max-width: 860px) {
+    .manifesto__griglia { grid-template-columns: repeat(3, 1fr); }
+    .manifesto__griglia span:nth-child(n + 4) { display: none; }
+    .manifesto__griglia span:nth-child(3) { border-right: 1px solid var(--linea); }
+    .manifesto__testo { font-size: clamp(2rem, 10.5vw, 5rem); }
+    .riga { justify-content: flex-start; padding-left: var(--gutter); }
+    .manifesto__piede { grid-template-columns: 1fr; gap: 2.5rem; }
+    .manifesto__intro, .manifesto__numeri { grid-column: 1; grid-row: auto; }
+  }
+</style>
+
+<script>
+  import { initMovimento, riduci } from '../scripts/movimento';
+  const righe = document.querySelectorAll<HTMLElement>('.manifesto [data-riga]');
+  if (righe.length && !riduci()) {
+    const { gsap } = initMovimento();
+    righe.forEach((r) => {
+      const verso = Number(r.dataset.riga);
+      gsap.fromTo(r, { xPercent: 14 * verso }, {
+        xPercent: -4 * verso, ease: 'none',
+        scrollTrigger: { trigger: r, start: 'top bottom', end: 'bottom top', scrub: 0.6 },
+      });
+    });
+  }
+</script>

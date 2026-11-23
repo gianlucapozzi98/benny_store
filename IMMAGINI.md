@@ -36,6 +36,34 @@ Qualità: ★★★ ottima (nitida, alta risoluzione) · ★★ buona (risoluzio
 | `opera-materica-blu.jpg` | 8ce5d84a… (1200×1600) | Opera materica su tela grezza, cerchi blu e viola, cornice a cassetta bianca. | ★★ | "Le opere" (griglia) | "Opera materica su tela grezza con due cerchi blu e viola, in cornice bianca a cassetta" |
 | `opera-materica-rossa.jpg` | c4017c72… (1200×1600) | Opera materica a rilievo nero e rosso, cornice bianca a cassetta. | ★★ | "Le opere" (griglia) | "Opera materica a rilievo in nero e rosso, in cornice bianca a cassetta" |
 
+## Le opere ritagliate (v2 — la galleria)
+
+Dalla v2 le opere non si mostrano più "appese al muro": `npm run opere` (`scripts/ritaglia-opere.mjs`) prende la foto originale,
+i 4 angoli del quadro segnati a mano e raddrizza la prospettiva con un'omografia. Escono quadri piatti, senza muro né cornice
+(per le grafiche su carta resta un filo del margine bianco del foglio; per le opere su juta un filo del fondo, perché i bordi sfilacciati fanno parte dell'opera).
+Il lato lungo non supera 2000 px né la risoluzione reale del quadro nella foto (+15%): le opere prese dalle foto delle pareti sono più piccole.
+
+| Opera (`src/assets/opere`) | Da | Misure | Nota |
+|---|---|---|---|
+| `ombrello-rosso` | ce20215b (opera singola) | 1638×2000 | Riflessi della carta lucida restano |
+| `sguardo-in-alto` | 28c0ae9b (opera singola) | 1546×2000 | |
+| `ritratto-in-giallo` | d93d91c2 (opera singola) | 1274×1273 | |
+| `volto-rosa` | aac0a1d0 (opera singola) | 927×1357 | Riflessi del vetro in alto a destra |
+| `cupola-e-simboli` | ae2d16c4 (opera singola) | 2000×1421 | |
+| `pannocchie` | 50ea240d (opera singola) | 813×829 | |
+| `il-chitarrista` | 3c8740ec (opera singola) | 1400×2000 | Solo il foglio, senza passepartout e cornice |
+| `cerchi-blu` | 8ce5d84a (opera singola) | 711×792 | |
+| `rosso-nel-nero` | c4017c72 (opera singola) | 792×1049 | |
+| `manifesti-strappati` | 789e75d6 (parete delle grafiche) | 1519×1387 | Riflessi del vetro (strisce chiare) |
+| `gocce` | 789e75d6 (parete delle grafiche) | 949×1301 | |
+| `donna-in-rosa` | 69c7e412 (angolo dei classici) | 470×736 | Piccola: usarla a misura contenuta |
+| `figura-su-arancio` | 69c7e412 (angolo dei classici) | 490×661 | Piccola; riflesso diagonale del vetro |
+| `decappottabile-rossa` | 789e75d6 (parete delle grafiche) | 523×518 | Piccola |
+| `scooter-a-pois` | 789e75d6 (parete delle grafiche) | 566×552 | Piccola; riflesso orizzontale del vetro |
+
+Per foto migliori delle opere più piccole: fotografarle da sole, di fronte, senza vetro o con luce di lato, e aggiornare gli angoli nello script.
+Le foto del negozio (`src/assets/foto/negozio-*`) restano per la sezione "Lo spazio". Le vecchie `src/assets/foto/opera-*` non sono più usate dal sito.
+
 ## Non usate sul sito
 
 | Originale | Cosa mostra | Perché no |

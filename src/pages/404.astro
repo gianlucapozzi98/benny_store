@@ -2,25 +2,35 @@
 import Base from '../layouts/Base.astro';
 import { negozio } from '../data/sito';
 ---
-<Base title="Pagina non trovata | Benny Store" description="La pagina che cerchi non c'è. Torna alla home di Benny Store o chiamaci." noindex>
+<Base title="Pagina non trovata | Benny Store" description="La pagina che cerchi non c'è. Torna alla galleria di Benny Store o chiamaci." noindex>
   <section class="vuota">
-    <p class="vuota__num" aria-hidden="true">404</p>
-    <h1>Questa parete è vuota.</h1>
+    <div class="vuota__cornice" aria-hidden="true"><span>404</span></div>
+    <h1>Questa parete <em>è vuota.</em></h1>
     <p>La pagina che cerchi non c'è, o è stata spostata. Le opere però sono ancora tutte appese.</p>
     <div class="vuota__cta">
-      <a class="btn" href="/">Torna in galleria</a>
+      <a class="btn" href="/#collezione">Torna alla collezione</a>
       <a class="btn btn--vuoto" href={negozio.telefono.href}>Chiamaci</a>
     </div>
   </section>
 </Base>
 <style>
   .vuota {
-    min-height: 100svh; display: grid; place-content: center; justify-items: center; gap: 1.25rem;
-    padding: var(--nav-h) var(--gutter); text-align: center;
-    background: radial-gradient(40% 50% at 50% 30%, rgba(255, 226, 186, 0.10), transparent 70%), var(--sala);
+    min-height: 100svh; display: grid; place-content: center; justify-items: center; gap: 1.5rem;
+    padding: calc(var(--nav-h) + 2rem) var(--gutter) 4rem; text-align: center;
   }
-  .vuota__num { font-size: clamp(7rem, 30vw, 20rem); font-weight: 900; line-height: 0.8; letter-spacing: -0.06em; color: transparent; -webkit-text-stroke: 1px rgba(244, 242, 236, 0.5); }
-  h1 { font-size: clamp(1.75rem, 1rem + 3vw, 3rem); font-weight: 900; text-transform: uppercase; letter-spacing: -0.02em; }
-  .vuota > p:not(.vuota__num) { color: var(--nebbia); max-width: 40ch; }
+  /* una cornice vuota appesa */
+  .vuota__cornice {
+    display: grid; place-items: center;
+    width: clamp(10rem, 30vw, 16rem); aspect-ratio: 4 / 5;
+    border: 10px solid var(--inchiostro); padding: 14%;
+    box-shadow: 0 30px 50px -24px rgba(0, 0, 0, 0.45);
+  }
+  .vuota__cornice span {
+    display: grid; place-items: center; width: 100%; height: 100%;
+    border: 1px solid var(--linea); background: var(--carta-2);
+    font-family: var(--serif); font-style: italic; font-size: clamp(2.5rem, 8vw, 4rem); color: var(--grafite);
+  }
+  h1 { font-family: var(--serif); font-weight: 400; font-size: clamp(2.75rem, 1.5rem + 5vw, 5.5rem); line-height: 0.95; letter-spacing: -0.02em; }
+  .vuota > p { color: var(--grafite); max-width: 40ch; }
   .vuota__cta { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem; margin-top: 0.5rem; }
 </style>

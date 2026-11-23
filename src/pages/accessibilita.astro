@@ -2,14 +2,16 @@
 import Pagina from '../layouts/Pagina.astro';
 import { negozio } from '../data/sito';
 ---
-<Pagina title="Accessibilità | Benny Store" description="L'impegno di Benny Store per un sito accessibile a tutti, secondo le WCAG 2.2 livello AA." titolo="Accessibilità" aggiornato="18 novembre 2026">
+<Pagina title="Accessibilità | Benny Store" description="L'impegno di Benny Store per un sito accessibile a tutti, secondo le WCAG 2.2 livello AA." titolo="Accessibilità" aggiornato="23 novembre 2026">
   <p>Vogliamo che questo sito si possa usare da tutti: con la tastiera, con un lettore di schermo, con lo zoom, su telefono e con le animazioni ridotte. Il riferimento è il livello AA delle linee guida WCAG 2.2.</p>
 
   <h2>Cosa abbiamo fatto</h2>
   <ul>
     <li>Tutto si usa da tastiera, con il focus sempre visibile e un collegamento "Vai al contenuto".</li>
-    <li>Il pilastro della pagina iniziale ruota da solo solo per i primi 5 secondi; poi gira soltanto quando scorri la pagina. Si ferma anche passandoci sopra o selezionando una categoria.</li>
-    <li>Se nel sistema hai attivato "Riduci movimento", il sito non usa rotazioni, scorrimento morbido né effetti di comparsa: le categorie diventano schede ferme.</li>
+    <li>Nella sala d'ingresso le opere cambiano solo quando scorri la pagina: niente si muove da solo. Le stesse opere sono elencate anche come collegamenti per i lettori di schermo.</li>
+    <li>Ogni opera ha la sua pagina, con titolo, descrizione e contatti; si passa alla precedente o alla successiva anche con le frecce della tastiera.</li>
+    <li>I filtri della collezione sono pulsanti che dicono se sono attivi; il numero di opere mostrate viene annunciato.</li>
+    <li>Se nel sistema hai attivato "Riduci movimento", il sito non usa scorrimento morbido, passaggi animati né effetti di comparsa: l'ingresso mostra una sola opera, ferma.</li>
     <li>Ogni foto ha una descrizione di ciò che mostra; le immagini decorative sono ignorate dai lettori di schermo.</li>
     <li>Testi e controlli rispettano il contrasto minimo AA; i pulsanti misurano almeno 44 pixel.</li>
     <li>La pagina funziona da 360 pixel di larghezza e con lo zoom al 200%.</li>
@@ -17,7 +19,7 @@ import { negozio } from '../data/sito';
 
   <h2>Limiti noti</h2>
   <ul>
-    <li>Il "faretto" della sezione Le opere è un effetto visivo: le stesse opere sono raggiungibili e descritte anche senza usarlo.</li>
+    <li>Le foto della sezione "Lo spazio" passano dal bianco e nero al colore mentre scorri: è solo un effetto visivo, le descrizioni restano le stesse.</li>
     <li>La mappa di Google Maps è un servizio esterno e la sua accessibilità non dipende da noi. Indirizzo e link alle indicazioni sono sempre disponibili come testo.</li>
   </ul>
 
