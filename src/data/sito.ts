@@ -20,12 +20,18 @@ export const negozio = {
   instagram: null as string | null,
 } as const;
 
-/** Il titolare. Nome e storia li fornirà il cliente: finché sono null il sito mostra un segnaposto. */
+/** Il titolare, per la sezione "Chi sono". */
 export const titolare = {
-  // DA CHIEDERE
+  // DA CHIEDERE: finché è null il nome non compare
   nome: null as string | null,
-  /** I paragrafi della sua storia, in ordine. */
-  storia: null as string[] | null,
+  /** I paragrafi della sua storia, in prima persona.
+   *  PROVVISORI: scritti da noi, generici e senza fatti inventati (niente date, luoghi, nomi).
+   *  Da sostituire con la storia vera quando il titolare la fornisce. */
+  storia: [
+    'Benny Store è il mio negozio e la mia galleria. Le opere che vedi su queste pareti le ho scelte una per una: grafiche firmate, pop art, classici in cornice dorata, pezzi materici da guardare da vicino.',
+    "Credo che un quadro non debba stare per forza in un museo. Può stare nel tuo soggiorno, in ufficio, o diventare il regalo che nessuno si aspetta. Per questo accanto all'arte trovi anche abbigliamento, oggettistica e idee regalo.",
+    'Passa a trovarmi: ti racconto tutto quello che so di ogni opera, e se cerchi qualcosa di preciso lo cerchiamo insieme.',
+  ] as string[] | null,
 };
 
 export const mapsHref =

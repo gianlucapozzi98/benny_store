@@ -1,13 +1,13 @@
 ---
-// IL TITOLARE — la persona dietro la galleria: la sua foto di spalle davanti alla parete dei classici,
-// il motto del biglietto da visita e la sua storia. Nome e storia arriveranno dal cliente:
-// finché in src/data/sito.ts sono null, si vede un segnaposto tratteggiato (come per orari e dati societari).
+// CHI SONO — il titolare racconta la galleria in prima persona: la sua foto di spalle davanti alla parete
+// dei classici, il motto del biglietto da visita e la sua storia (testi in src/data/sito.ts → titolare).
+// Il nome compare solo quando è noto; senza storia si vedrebbe un segnaposto tratteggiato.
 import { Picture } from 'astro:assets';
 import { negozio, titolare } from '../data/sito';
 import foto from '../assets/foto/negozio-visitatore-parete-classico.jpg';
 const chi = titolare.nome ?? 'Il titolare';
 ---
-<section class="titolare sezione" id="titolare" aria-labelledby="titolare-titolo" data-titolare>
+<section class="titolare sezione" id="chi-sono" aria-labelledby="titolare-titolo" data-titolare>
   <div class="titolare__griglia">
     <figure class="titolare__foto" data-titolare-foto>
       <div class="titolare__cornice" data-titolare-cornice>
@@ -17,13 +17,13 @@ const chi = titolare.nome ?? 'Il titolare';
           alt={`${chi} di Benny Store, di spalle, guarda la parete dei quadri classici in cornici dorate`}
         />
       </div>
-      <p class="titolare__verticale etichetta" aria-hidden="true">La storia <span>·</span> Benny Store</p>
-      <figcaption class="etichetta">{chi}, davanti alla parete dei classici</figcaption>
+      <p class="titolare__verticale etichetta" aria-hidden="true">Chi sono <span>·</span> Benny Store</p>
+      <figcaption class="etichetta">{titolare.nome ? `${titolare.nome}, davanti` : 'Davanti'} alla parete dei classici</figcaption>
     </figure>
 
     <div class="titolare__testo">
-      <p class="etichetta titolare__eti" data-svela>La storia</p>
-      <h2 id="titolare-titolo" class="titolo-sezione" data-svela>Il titolare.</h2>
+      <p class="etichetta titolare__eti" data-svela>Il titolare</p>
+      <h2 id="titolare-titolo" class="titolo-sezione" data-svela>Chi sono.</h2>
 
       <blockquote class="titolare__motto" data-svela>
         <p>{negozio.motto[0]}<br /><em>{negozio.motto[1]}</em></p>
@@ -33,21 +33,23 @@ const chi = titolare.nome ?? 'Il titolare';
       <div class="titolare__storia" data-svela>
         {titolare.storia
           ? titolare.storia.map((p) => <p>{p}</p>)
-          : <p><span class="da-confermare">La storia del titolare: testo in arrivo</span></p>}
+          : <p><span class="da-confermare">La mia storia: testo in arrivo</span></p>}
       </div>
 
       <dl class="titolare__dati" data-svela>
+        {titolare.nome && (
+          <div>
+            <dt class="etichetta">Nome</dt>
+            <dd>{titolare.nome}</dd>
+          </div>
+        )}
         <div>
-          <dt class="etichetta">Nome</dt>
-          <dd>{titolare.nome ?? <span class="da-confermare">da confermare</span>}</dd>
-        </div>
-        <div>
-          <dt class="etichetta">Dove trovarlo</dt>
+          <dt class="etichetta">Dove trovarmi</dt>
           <dd>{negozio.indirizzo.via}, {negozio.indirizzo.citta}</dd>
         </div>
       </dl>
 
-      <a class="titolare__vai sottolinea" href="#visita" data-svela>Passa a trovarlo in galleria <span aria-hidden="true">→</span></a>
+      <a class="titolare__vai sottolinea" href="#visita" data-svela>Passa a trovarmi in galleria <span aria-hidden="true">→</span></a>
     </div>
   </div>
 </section>

@@ -38,7 +38,7 @@ I link interni ("Collezione", "Lo spazio", "Visita") scorrono alla sezione senza
 **Collezione.** 15 opere "appese" su pareti color carta che al passaggio prendono il colore dell'opera; numero da catalogo, filtri per sezione con riordino animato (GSAP Flip); cursore "Guarda".
 **Pagina d'opera.** Quadro sulla sua parete colorata a sinistra, scheda a destra con numero gigante, descrizione, "Chiedi di quest'opera" (email precompilata) e precedente/successiva (anche con le frecce). Dalla collezione l'immagine "vola" nella pagina (View Transitions, dove supportate).
 **Lo spazio.** Foto vere del negozio sparse a velocità diverse, dal bianco e nero al colore; poi i cinque reparti del biglietto.
-**Il titolare.** La sua foto di spalle davanti alla parete dei classici (si apre scorrendo e torna a colori), il motto del biglietto da visita e la sua storia (testo in arrivo dal cliente).
+**Chi sono.** Il titolare in prima persona: la sua foto di spalle davanti alla parete dei classici (si apre scorrendo e torna a colori), il motto del biglietto da visita e qualche frase provvisoria, in attesa della sua storia vera.
 **Riferimenti** (solo per ritmo e animazioni, non copiati): lironmoran-interiors.com (contatore, titolo gigante con immagine al centro, galleria a schermo diviso), recruit.pearl-idea.co.jp (carta calda, corsivi serif, numeri "01", foto sparse), paulkalkbrenner.net (griglia numerata, righe giganti con immagini dentro, filtri).
 **Colori e caratteri.** Carta calda #EFEBE3 per le sale, antracite delle pareti vere per i momenti scuri, rosso LED una volta per schermata. Instrument Serif (titoli, self-hosted) + Montserrat (il carattere del biglietto).
 
@@ -53,7 +53,7 @@ I link interni ("Collezione", "Lo spazio", "Visita") scorrono alla sezione senza
 | Le 5 opere della sala d'ingresso / le 3 dentro il manifesto | `inEvidenza` e `nelTesto` in `src/data/opere.ts` |
 | Sezioni della collezione (filtri) | `categorie` in `src/data/opere.ts` |
 | Foto e didascalie di "Lo spazio", reparti | `src/components/Spazio.astro` |
-| Nome e storia del titolare | `titolare` in `src/data/sito.ts` (`storia` = elenco di paragrafi). Finché sono `null` la sezione "Il titolare" mostra un segnaposto tratteggiato. Foto e impaginazione: `src/components/Titolare.astro` |
+| Nome e storia del titolare (sezione "Chi sono") | `titolare` in `src/data/sito.ts` (`storia` = elenco di paragrafi in prima persona; oggi sono **testi provvisori** generici, da sostituire con la storia vera). Il nome compare solo se non è `null`. Foto e impaginazione: `src/components/Titolare.astro` |
 | Domande frequenti (anche dati strutturati FAQPage) | array `faq` in `src/components/Visita.astro` — aggiungere solo risposte vere |
 | Colori, tipografia, curve e durate del movimento | token in `src/styles/global.css` (`:root`) |
 | Immagine social e favicon | `scripts/genera-icone.mjs`, poi `npm run icone` |
@@ -67,7 +67,7 @@ Quando arrivano **artista, titolo vero, tecnica, misure e prezzo** di un'opera: 
 
 - Ragione sociale, forma giuridica, codice fiscale, REA, PEC (e capitale sociale se società di capitali).
 - **Orari** di apertura e giorni di chiusura.
-- **Il titolare**: nome e la sua storia (come è nata la galleria, cosa cerca nelle opere…) per la sezione "Il titolare".
+- **Il titolare**: nome e la sua storia (come è nata la galleria, cosa cerca nelle opere…) per sostituire i testi provvisori di "Chi sono".
 - Il 350 133 0118 è anche **WhatsApp**? Se sì, aggiungere il pulsante nelle pagine d'opera e in Visita.
 - **Profili social** (Instagram?) e se mostrarli.
 - Vende solo in negozio o vuole un catalogo/e-commerce? Spedisce?
