@@ -1,0 +1,129 @@
+---
+// IL TITOLARE — la persona dietro la galleria: la sua foto di spalle davanti alla parete dei classici,
+// il motto del biglietto da visita e la sua storia. Nome e storia arriveranno dal cliente:
+// finché in src/data/sito.ts sono null, si vede un segnaposto tratteggiato (come per orari e dati societari).
+import { Picture } from 'astro:assets';
+import { negozio, titolare } from '../data/sito';
+import foto from '../assets/foto/negozio-visitatore-parete-classico.jpg';
+const chi = titolare.nome ?? 'Il titolare';
+---
+<section class="titolare sezione" id="titolare" aria-labelledby="titolare-titolo" data-titolare>
+  <div class="titolare__griglia">
+    <figure class="titolare__foto" data-titolare-foto>
+      <div class="titolare__cornice" data-titolare-cornice>
+        <Picture
+          src={foto} formats={['avif', 'webp']} widths={[480, 720, 960, 1200]}
+          sizes="(max-width: 860px) 92vw, 46vw" loading="lazy" decoding="async"
+          alt={`${chi} di Benny Store, di spalle, guarda la parete dei quadri classici in cornici dorate`}
+        />
+      </div>
+      <p class="titolare__verticale etichetta" aria-hidden="true">La storia <span>·</span> Benny Store</p>
+      <figcaption class="etichetta">{chi}, davanti alla parete dei classici</figcaption>
+    </figure>
+
+    <div class="titolare__testo">
+      <p class="etichetta titolare__eti" data-svela>La storia</p>
+      <h2 id="titolare-titolo" class="titolo-sezione" data-svela>Il titolare.</h2>
+
+      <blockquote class="titolare__motto" data-svela>
+        <p>{negozio.motto[0]}<br /><em>{negozio.motto[1]}</em></p>
+        <footer class="etichetta">Dal biglietto da visita di {negozio.nome}</footer>
+      </blockquote>
+
+      <div class="titolare__storia" data-svela>
+        {titolare.storia
+          ? titolare.storia.map((p) => <p>{p}</p>)
+          : <p><span class="da-confermare">La storia del titolare: testo in arrivo</span></p>}
+      </div>
+
+      <dl class="titolare__dati" data-svela>
+        <div>
+          <dt class="etichetta">Nome</dt>
+          <dd>{titolare.nome ?? <span class="da-confermare">da confermare</span>}</dd>
+        </div>
+        <div>
+          <dt class="etichetta">Dove trovarlo</dt>
+          <dd>{negozio.indirizzo.via}, {negozio.indirizzo.citta}</dd>
+        </div>
+      </dl>
+
+      <a class="titolare__vai sottolinea" href="#visita" data-svela>Passa a trovarlo in galleria <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .titolare { background: var(--carta-2); }
+  .titolare__griglia {
+    max-width: var(--max); margin: 0 auto;
+    display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: var(--gutter);
+    align-items: center;
+  }
+
+  .titolare__foto { grid-column: 1 / span 6; position: relative; margin: 0; display: grid; gap: 0.9rem; }
+  .titolare__cornice { overflow: hidden; aspect-ratio: 3 / 4; }
+  .titolare__cornice :global(picture), .titolare__cornice :global(img) { width: 100%; height: 100%; }
+  .titolare__cornice :global(img) {
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.06);
+    transition: filter 1.4s var(--ease-out);
+  }
+  .titolare__foto.a-colori .titolare__cornice :global(img) { filter: grayscale(0.15) contrast(1.02); }
+  .titolare__foto figcaption { color: var(--grafite); }
+  /* etichetta verticale lungo il bordo della foto, come una didascalia da mostra */
+  .titolare__verticale {
+    position: absolute; top: 1.25rem; right: -2.25rem;
+    writing-mode: vertical-rl; color: var(--grafite);
+  }
+  .titolare__verticale span { color: var(--led); }
+
+  .titolare__testo { grid-column: 8 / span 5; display: grid; gap: clamp(1.5rem, 3vw, 2.25rem); justify-items: start; }
+  .titolare__eti { color: var(--grafite); margin-bottom: -0.5rem; }
+
+  .titolare__motto { margin: 0; padding: 1.5rem 0; border-top: 1px solid var(--inchiostro); border-bottom: 1px solid var(--linea); display: grid; gap: 1rem; }
+  .titolare__motto p { font-family: var(--serif); font-size: clamp(1.75rem, 1.2rem + 1.8vw, 3rem); line-height: 1.08; letter-spacing: -0.01em; }
+  .titolare__motto em { color: var(--grafite); }
+  .titolare__motto footer { color: var(--grafite); }
+
+  .titolare__storia { display: grid; gap: 1rem; max-width: 42ch; font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem); line-height: 1.6; }
+
+  .titolare__dati { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; width: 100%; }
+  .titolare__dati dt { color: var(--grafite); margin-bottom: 0.3rem; }
+  .titolare__dati dd { margin: 0; font-family: var(--serif); font-size: 1.5rem; line-height: 1.15; }
+
+  .titolare__vai { display: inline-block; padding: 0.75rem 0; font-size: var(--fs-etichetta); font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; }
+
+  @media (max-width: 860px) {
+    .titolare__griglia { grid-template-columns: 1fr; row-gap: 3rem; }
+    .titolare__foto, .titolare__testo { grid-column: 1; }
+    .titolare__verticale { display: none; }
+    .titolare__dati { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .titolare__cornice :global(img) { filter: none; }
+  }
+</style>
+
+<script>
+  import { initMovimento, riduci } from '../scripts/movimento';
+  const foto = document.querySelector<HTMLElement>('[data-titolare-foto]');
+  if (foto) {
+    if (riduci()) {
+      foto.classList.add('a-colori');
+    } else {
+      const { gsap, ScrollTrigger } = initMovimento();
+      const cornice = foto.querySelector<HTMLElement>('[data-titolare-cornice]')!;
+      const img = cornice.querySelector('img');
+      // la foto si apre dal basso, poi torna a colori quando arriva al centro
+      gsap.fromTo(cornice, { clipPath: 'inset(18% 0% 0% 0%)' }, {
+        clipPath: 'inset(0% 0% 0% 0%)', ease: 'none',
+        scrollTrigger: { trigger: foto, start: 'top 90%', end: 'top 35%', scrub: true },
+      });
+      if (img) gsap.fromTo(img, { scale: 1.18, yPercent: -4 }, {
+        scale: 1, yPercent: 4, ease: 'none',
+        scrollTrigger: { trigger: foto, start: 'top bottom', end: 'bottom top', scrub: true },
+      });
+      ScrollTrigger.create({ trigger: foto, start: 'top 55%', end: 'bottom 20%', toggleClass: 'a-colori' });
+    }
+  }
+</script>

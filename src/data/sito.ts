@@ -20,6 +20,14 @@ export const negozio = {
   instagram: null as string | null,
 } as const;
 
+/** Il titolare. Nome e storia li fornirà il cliente: finché sono null il sito mostra un segnaposto. */
+export const titolare = {
+  // DA CHIEDERE
+  nome: null as string | null,
+  /** I paragrafi della sua storia, in ordine. */
+  storia: null as string[] | null,
+};
+
 export const mapsHref =
   'https://www.google.com/maps/search/?api=1&query=' +
   encodeURIComponent('Via delle Betulle 1/3, Cesano Boscone MI');
