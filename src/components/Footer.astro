@@ -1,11 +1,15 @@
 ---
-import { negozio, mapsHref } from '../data/sito';
+import { negozio, mapsHref, natale } from '../data/sito';
+import Neve from './Neve.astro';
 const anno = new Date().getFullYear();
 const manca = 'da confermare';
 ---
 <footer class="piede-sito">
+  {natale && <Neve quanti={70} strato="fondo" />}
   <div class="piede-sito__cta">
-    <p class="piede-sito__domanda">Hai visto un'opera <em>che ti piace?</em></p>
+    {natale
+      ? <p class="piede-sito__domanda">Il regalo di Natale <em>che resta appeso.</em></p>
+      : <p class="piede-sito__domanda">Hai visto un'opera <em>che ti piace?</em></p>}
     <div class="piede-sito__bottoni">
       <a class="btn btn--chiaro" href={negozio.telefono.href}>Chiamaci · {negozio.telefono.vista}</a>
       <a class="btn btn--chiaro btn--vuoto" href={`mailto:${negozio.email}`}>Scrivici</a>
@@ -56,6 +60,7 @@ const manca = 'da confermare';
     background: var(--sala); color: var(--avorio);
   }
   .piede-sito :focus-visible { outline-color: var(--indaco-luce); }
+  .piede-sito > :not(canvas) { position: relative; z-index: 2; }
   .piede-sito__cta { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 2rem; max-width: var(--max); margin: 0 auto; }
   .piede-sito__domanda { font-family: var(--serif); font-size: clamp(2.25rem, 1.4rem + 3.5vw, 4.75rem); line-height: 1; max-width: 14ch; }
   .piede-sito__domanda em { color: var(--nebbia); }

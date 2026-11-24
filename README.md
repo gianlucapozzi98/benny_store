@@ -53,6 +53,7 @@ I link interni ("Collezione", "Lo spazio", "Visita") scorrono alla sezione senza
 | Le 5 opere della sala d'ingresso / le 3 dentro il manifesto | `inEvidenza` e `nelTesto` in `src/data/opere.ts` |
 | Sezioni della collezione (filtri) | `categorie` in `src/data/opere.ts` |
 | Foto e didascalie di "Lo spazio", reparti | `src/components/Spazio.astro` |
+| Allestimento di Natale (neve e lucine nella sala e nel footer, cartellini "Idea regalo", testi delle feste) | `natale` in `src/data/sito.ts`: **mettere `false` dopo l'Epifania** e rifare il push. Neve: `src/components/Neve.astro` |
 | Nome e storia del titolare (sezione "Chi sono") | `titolare` in `src/data/sito.ts` (`storia` = elenco di paragrafi in prima persona; oggi sono **testi provvisori** generici, da sostituire con la storia vera). Il nome compare solo se non è `null`. Foto e impaginazione: `src/components/Titolare.astro` |
 | Domande frequenti (anche dati strutturati FAQPage) | array `faq` in `src/components/Visita.astro` — aggiungere solo risposte vere |
 | Colori, tipografia, curve e durate del movimento | token in `src/styles/global.css` (`:root`) |

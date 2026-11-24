@@ -5,11 +5,17 @@
 // e la "parete" prende il colore di ognuna. Con movimento ridotto o senza JS: la prima opera, ferma.
 import { Picture } from 'astro:assets';
 import { inEvidenza, categorie } from '../data/opere';
+import { natale } from '../data/sito';
+import Neve from './Neve.astro';
 const prima = inEvidenza[0];
+// Natale: le lucine in fondo alla sala si accendono man mano che si scorre
+const colori = ['#e5383f', '#e2bd6b', '#3fae6a', '#fff1cf'];
+const lucine = Array.from({ length: 23 }, (_, i) => colori[i % colori.length]);
 const totale = String(inEvidenza.length).padStart(2, '0');
 ---
 <section class="sala" aria-labelledby="sala-titolo" data-sala style={`--n:${inEvidenza.length}`}>
   <div class="sala__scena" data-sala-scena style={`background-color:${prima.fondo}`}>
+    {natale && <Neve quanti={110} strato="fondo" />}
     <h1 id="sala-titolo" class="sala__nome">
       <span class="sala__parola" data-parola>Benny</span>
       <span class="sala__parola" data-parola>Store</span>
@@ -29,11 +35,29 @@ const totale = String(inEvidenza.length).padStart(2, '0');
             widths={[480, 720, 960, 1280]} sizes="(max-width: 700px) 72vw, 40vw"
             loading={i ? 'lazy' : 'eager'} fetchpriority={i ? 'auto' : 'high'} decoding="async"
           />
+          {natale && (
+            <span class="sala__regalo cartellino-ombra" aria-hidden="true">
+              <svg class="sala__fiocco" viewBox="0 0 48 30" width="44" height="28">
+                <g fill="#b3202a">
+                  <path d="M24 14C16 2 4 2 6 12c2 8 12 6 18 2z" />
+                  <path d="M24 14c8-12 20-12 18-2-2 8-12 6-18 2z" />
+                  <path d="M22 15l-8 14 5-2 2 3 3-14z" />
+                  <path d="M26 15l8 14-5-2-2 3-3-14z" />
+                </g>
+                <circle cx="24" cy="14" r="3.6" fill="#8e1820" />
+              </svg>
+              <span class="sala__filo"></span>
+              <span class="cartellino">Idea regalo</span>
+            </span>
+          )}
         </figure>
       ))}
     </div>
 
-    <p class="sala__eti etichetta" data-sala-ui>Galleria d'arte <span aria-hidden="true">·</span> Cesano Boscone</p>
+    <p class="sala__eti etichetta" data-sala-ui>
+      {natale && <><span class="sala__auguri">Buone feste</span> <span aria-hidden="true">·</span> </>}
+      Galleria d'arte <span class:list={['sala__citta', { 'sala__citta--natale': natale }]}><span aria-hidden="true">·</span> Cesano Boscone</span>
+    </p>
     <p class="sala__scorri etichetta" data-sala-ui aria-hidden="true"><span></span>Scorri</p>
     <p class="sala__conta" data-sala-ui aria-hidden="true"><span class="sala__conta-n" data-sala-n>01</span><span class="sala__conta-tot">/ {totale}</span></p>
 
@@ -47,7 +71,14 @@ const totale = String(inEvidenza.length).padStart(2, '0');
       </a>
       <a class="sala__tutte sottolinea" href="#collezione">Tutta la collezione</a>
     </div>
-    <div class="sala__barra" aria-hidden="true"><span data-sala-barra></span></div>
+    {natale ? (
+      <div class="sala__lucine" aria-hidden="true" data-sala-lucine>
+        {lucine.map((c, i) => <span class="lampadina accesa" style={`--c:${c};--i:${i}`}></span>)}
+      </div>
+    ) : (
+      <div class="sala__barra" aria-hidden="true"><span data-sala-barra></span></div>
+    )}
+    {natale && <Neve quanti={16} strato="fronte" />}
   </div>
 
   <ol class="sr-only">
@@ -130,10 +161,45 @@ const totale = String(inEvidenza.length).padStart(2, '0');
   }
   .sala__tutte { font-size: var(--fs-etichetta); font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; padding: 0.75rem 0; }
 
+  /* Natale: cartellino "Idea regalo" legato con un fiocco all'angolo dell'opera */
+  .sala__regalo {
+    position: absolute; top: -15px; right: 9%; z-index: 1;
+    display: flex; flex-direction: column; align-items: center;
+    transform-origin: 50% 12px;
+    animation: dondola 3.2s ease-in-out infinite;
+  }
+  .sala__fiocco { display: block; }
+  .sala__filo { display: block; width: 1px; height: 1.6rem; margin-top: -0.6rem; background: var(--natale-oro); }
+  .sala__regalo .cartellino { margin-top: -0.15rem; transform: rotate(-3deg); }
+  @keyframes dondola { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(5deg); } }
+  .sala__auguri { color: var(--natale-oro); }
+
+  /* Natale: un filo di lucine al posto della barra di avanzamento */
+  .sala__lucine {
+    position: absolute; z-index: 3; left: var(--gutter); right: var(--gutter); bottom: calc(var(--gutter) - 0.6rem);
+    height: 1.25rem; display: flex; justify-content: space-between; align-items: flex-start;
+  }
+  .sala__lucine::before { content: ''; position: absolute; left: 0; right: 0; top: 0.32rem; height: 1px; background: rgba(244, 242, 236, 0.3); }
+  .lampadina {
+    position: relative; top: 0.32rem; width: 7px; height: 11px;
+    border-radius: 50% 50% 45% 45% / 40% 40% 60% 60%;
+    background: var(--c); opacity: 0.22;
+    transition: opacity 0.5s var(--ease-out), box-shadow 0.5s var(--ease-out);
+  }
+  .lampadina::before { content: ''; position: absolute; left: 1px; right: 1px; top: -3px; height: 4px; border-radius: 1px; background: #2a2b2f; }
+  .lampadina.accesa {
+    opacity: 1;
+    box-shadow: 0 0 6px 1px var(--c), 0 0 16px 4px color-mix(in srgb, var(--c) 45%, transparent);
+    animation: scintilla 2.6s ease-in-out infinite; animation-delay: calc(var(--i) * -0.41s);
+  }
+  @keyframes scintilla { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+
   .sala__barra { position: absolute; z-index: 3; left: var(--gutter); right: var(--gutter); bottom: var(--gutter); height: 1px; background: rgba(244, 242, 236, 0.2); }
   .sala__barra span { position: absolute; inset: 0; background: var(--avorio); transform: scaleX(calc(1 / var(--n))); transform-origin: left; }
 
   @media (max-width: 700px) {
+    .sala__citta--natale { display: none; }
+    .sala__regalo { right: 6%; transform-origin: 50% 12px; }
     .sala__nome { flex-direction: column; justify-content: center; gap: 0; font-size: 33vw; line-height: 0.78; }
     .sala__nome .sala__parola:first-child { align-self: flex-start; margin-bottom: 34svh; }
     .sala__nome .sala__parola:nth-child(2) { align-self: flex-end; }
@@ -168,7 +234,9 @@ const totale = String(inEvidenza.length).padStart(2, '0');
     const $ = <T extends HTMLElement>(s: string) => sala.querySelector<T>(s)!;
     const nEl = $('[data-sala-n]'), catEl = $('[data-sala-cat]'), titEl = $('[data-sala-titolo]');
     const link = $<HTMLAnchorElement>('[data-sala-link]'), linkNome = $('[data-sala-link-nome]');
-    const barra = $('[data-sala-barra]');
+    const barra = sala.querySelector<HTMLElement>('[data-sala-barra]');
+    const lampadine = [...sala.querySelectorAll<HTMLElement>('.lampadina')];
+    let accese = -1;
     const imgs = quadri.map((q) => q.querySelector('img'));
 
     let attivo = 0;
@@ -206,7 +274,7 @@ const totale = String(inEvidenza.length).padStart(2, '0');
         .set(da, { autoAlpha: 0, clearProps: 'clipPath,transform' })
         .fromTo(a,
           { autoAlpha: 1, clipPath: verso > 0 ? 'inset(100% 0% 0% 0%)' : 'inset(0% 0% 100% 0%)', yPercent: 8 * verso, scale: 1.06 },
-          { clipPath: 'inset(0% 0% 0% 0%)', yPercent: 0, scale: 1, duration: 0.95, ease: 'expo.out' }, 0.18);
+          { clipPath: 'inset(0% 0% 0% 0%)', yPercent: 0, scale: 1, duration: 0.95, ease: 'expo.out', clearProps: 'clipPath' }, 0.18);
       gsap.to(scena, { backgroundColor: dati[i].fondo, duration: 0.9, ease: 'power2.inOut' });
       da.setAttribute('aria-hidden', 'true');
       a.removeAttribute('aria-hidden');
@@ -220,12 +288,21 @@ const totale = String(inEvidenza.length).padStart(2, '0');
       attivo = i;
     };
 
+    // Natale: all'inizio è accesa solo la prima lucina
+    lampadine.forEach((l, j) => l.classList.toggle('accesa', j < 1));
+    accese = 1;
+
     ScrollTrigger.create({
       trigger: sala, start: 'top top', end: 'bottom bottom',
       onUpdate: (st) => {
         const i = Math.min(dati.length - 1, Math.floor(st.progress * dati.length * 0.999));
         vai(i);
-        barra.style.transform = `scaleX(${Math.max(1 / dati.length, st.progress)})`;
+        if (barra) barra.style.transform = `scaleX(${Math.max(1 / dati.length, st.progress)})`;
+        if (lampadine.length) {
+          // Natale: una lucina in più per ogni tratto di scorrimento (la prima è sempre accesa)
+          const k = Math.max(1, Math.ceil(st.progress * lampadine.length));
+          if (k !== accese) { lampadine.forEach((l, j) => l.classList.toggle('accesa', j < k)); accese = k; }
+        }
       },
     });
   }

@@ -3,9 +3,11 @@
 // poi il sipario sale e si entra nella sala. Una volta per visita, mai con movimento ridotto.
 // Tempi e uscita sono in CSS: anche senza JavaScript il sipario sparisce da solo dopo 1,6 s.
 // Il contenuto è già nel DOM e dipinto sotto: LCP non viene ritardato.
+// A Natale (vedi `natale` in src/data/sito.ts) gli auguri e una striscia di lucine colorate.
+import { natale } from '../data/sito';
 ---
 <div class="ingresso" aria-hidden="true" data-ingresso>
-  <p class="ingresso__eti etichetta">Benny Store <span>—</span> Galleria d'arte</p>
+  <p class="ingresso__eti etichetta">Benny Store <span>—</span> {natale ? 'Buone feste dalla galleria' : "Galleria d'arte"}</p>
   <p class="ingresso__num"><span data-ingresso-num>0</span><small>%</small></p>
   <span class="ingresso__led"></span>
 </div>
@@ -53,6 +55,14 @@
     transform-origin: left;
     animation: led 1.05s cubic-bezier(0.33, 0, 0.2, 1) both;
   }
+  :global(.natale) .ingresso__led {
+    height: 4px; box-shadow: none;
+    background: repeating-linear-gradient(90deg,
+      #e5383f 0 10px, transparent 10px 22px, #e2bd6b 22px 32px, transparent 32px 44px,
+      #3fae6a 44px 54px, transparent 54px 66px, #fff1cf 66px 76px, transparent 76px 88px);
+    filter: drop-shadow(0 0 5px rgba(255, 210, 140, 0.7));
+  }
+  :global(.natale) .ingresso__eti span { color: var(--natale-oro); }
   @keyframes led { from { transform: scaleX(0); } to { transform: scaleX(1); } }
   @keyframes num-esce { to { transform: translateY(-30%); opacity: 0; } }
   @keyframes sipario {

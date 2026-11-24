@@ -3,6 +3,7 @@
 // Scorrendo le righe scivolano in versi opposti fino ad allinearsi.
 import { Picture } from 'astro:assets';
 import { nelTesto, opere, categorie } from '../data/opere';
+import { natale } from '../data/sito';
 const [a, b, c] = nelTesto;
 ---
 <section class="manifesto" aria-labelledby="manifesto-titolo">
@@ -10,12 +11,12 @@ const [a, b, c] = nelTesto;
     {['01', '02', '03', '04', '05', '06'].map((n) => <span>{n}</span>)}
   </div>
 
-  <h2 id="manifesto-titolo" class="sr-only">Quadri d'autore, pop art, grafiche, materici, classici e disegni: da vedere dal vivo.</h2>
+  <h2 id="manifesto-titolo" class="sr-only">Quadri d'autore, pop art, grafiche, materici, classici e disegni: {natale ? 'da regalare a Natale.' : 'da vedere dal vivo.'}</h2>
   <div class="manifesto__testo" aria-hidden="true">
     <span class="riga" data-riga="1">Quadri <a class="mini" href={`/opere/${a.slug}`} tabindex="-1" aria-hidden="true"><Picture src={a.img} alt="" formats={['avif', 'webp']} widths={[160, 320]} sizes="12rem" loading="lazy" /></a> <em>d'autore,</em></span>
     <span class="riga" data-riga="-1">pop art <i class="punto" aria-hidden="true"></i> grafiche <i class="punto" aria-hidden="true"></i> <em>materici,</em></span>
     <span class="riga" data-riga="1"><em>classici</em> <a class="mini" href={`/opere/${b.slug}`} tabindex="-1" aria-hidden="true"><Picture src={b.img} alt="" formats={['avif', 'webp']} widths={[160, 320]} sizes="12rem" loading="lazy" /></a> e disegni</span>
-    <span class="riga" data-riga="-1">da vedere <a class="mini" href={`/opere/${c.slug}`} tabindex="-1" aria-hidden="true"><Picture src={c.img} alt="" formats={['avif', 'webp']} widths={[160, 320]} sizes="12rem" loading="lazy" /></a> <em>dal vivo.</em></span>
+    <span class="riga" data-riga="-1">{natale ? 'da regalare' : 'da vedere'} <a class="mini" href={`/opere/${c.slug}`} tabindex="-1" aria-hidden="true"><Picture src={c.img} alt="" formats={['avif', 'webp']} widths={[160, 320]} sizes="12rem" loading="lazy" /></a> <em class:list={[{ 'manifesto__natale': natale }]}>{natale ? 'a Natale.' : 'dal vivo.'}</em></span>
   </div>
 
   <div class="manifesto__piede">
@@ -64,6 +65,8 @@ const [a, b, c] = nelTesto;
   .riga em { font-family: var(--serif); font-style: italic; font-weight: 400; text-transform: none; letter-spacing: -0.02em; font-size: 1.12em; }
   .punto { display: inline-block; width: 0.55em; height: 0.55em; border-radius: 50%; background: currentColor; }
   .riga .punto:first-of-type { background: var(--led); }
+  :global(.natale) .riga .punto:last-of-type { background: var(--natale-abete); }
+  .manifesto__natale { color: var(--natale-rosso); }
 
   .mini {
     display: inline-block; height: 0.8em; flex: none;

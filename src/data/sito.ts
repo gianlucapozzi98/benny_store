@@ -20,6 +20,10 @@ export const negozio = {
   instagram: null as string | null,
 } as const;
 
+/** Allestimento di Natale: neve e lucine nella sala, cartellini "Idea regalo", testi delle feste.
+ *  Mettere `false` dopo l'Epifania (e rifare il push): il sito torna com'era, la struttura non cambia. */
+export const natale = true;
+
 /** Il titolare, per la sezione "Chi sono". */
 export const titolare = {
   // DA CHIEDERE: finché è null il nome non compare

@@ -47,6 +47,10 @@
   --indaco-luce: #9da0f5;
   --led: #e5383f;         /* la striscia LED del soffitto: un solo uso per schermata */
   --miele: #d99a5b;
+  /* Natale (classe .natale su <html>, vedi `natale` in src/data/sito.ts) */
+  --natale-rosso: #b3202a;
+  --natale-oro: #e2bd6b;
+  --natale-abete: #2f6b4a;
 
   /* Tipografia */
   --serif: 'Instrument Serif', 'Times New Roman', Georgia, serif;
@@ -202,6 +206,23 @@ h1, h2, h3, p { margin: 0; }
 /* Comparsa morbida */
 .js [data-svela] { opacity: 0; transform: translateY(28px); transition: opacity var(--dur-lenta) var(--ease-out), transform var(--dur-lenta) var(--ease-out); }
 .js [data-svela].svelato { opacity: 1; transform: none; }
+
+/* Cartellino "Idea regalo" (Natale): carta avorio, foro e spago rosso */
+.cartellino {
+  position: relative; display: inline-flex; align-items: center; gap: 0.45em;
+  padding: 0.4em 0.75em 0.4em 1.1em;
+  background: var(--avorio); color: var(--inchiostro);
+  font-family: var(--serif); font-style: italic; font-size: 0.95rem; line-height: 1; white-space: nowrap;
+  clip-path: polygon(0.7em 0, 100% 0, 100% 100%, 0.7em 100%, 0 50%);
+}
+/* l'ombra va sul contenitore: clip-path taglierebbe quella del cartellino */
+.cartellino-ombra { filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.35)); }
+.cartellino::before {
+  content: ''; position: absolute; left: 0.55em; top: 50%; width: 0.32em; height: 0.32em; margin-top: -0.16em;
+  border-radius: 50%; background: var(--natale-rosso);
+}
+.cartellino--rosso { background: var(--natale-rosso); color: var(--avorio); }
+.cartellino--rosso::before { background: var(--avorio); }
 
 /* Cursore (solo desktop): un punto, che diventa un cerchio con una parola sulle opere */
 .cursore {
