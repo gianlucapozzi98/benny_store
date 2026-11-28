@@ -210,6 +210,32 @@ const totale = String(inEvidenza.length).padStart(2, '0');
     .sala__azioni { left: var(--gutter); right: var(--gutter); bottom: calc(var(--gutter) + 0.75rem); justify-content: space-between; }
   }
 
+  /* Tablet: "Scorri" al centro finirebbe sotto i pulsanti a destra */
+  @media (max-width: 960px) { .sala__scorri { display: none; } }
+
+  /* Telefoni bassi in verticale (es. 320×568, 360×640): opera e nome più compatti,
+     così "Store" non copre la didascalia in basso */
+  @media (max-width: 700px) and (max-height: 700px) and (orientation: portrait) {
+    .sala__nome, .sala__quadri { padding-bottom: 3rem; }
+    .sala__nome .sala__parola:first-child { margin-bottom: 27svh; }
+    .sala__quadro { width: min(calc(var(--r) * 38svh), 60vw); }
+  }
+
+  /* Telefono in orizzontale: la scena deve stare tutta nello schermo */
+  @media (orientation: landscape) and (max-height: 520px) {
+    .sala__scena { min-height: 0; }
+    .sala__nome { font-size: clamp(4rem, 15vw, 9rem); }
+    .sala__quadro { width: min(calc(var(--r) * 46svh), 30vw); }
+    .sala__eti { display: none; }
+    .sala__conta { top: auto; bottom: calc(var(--gutter) + 4.25rem); }
+    .sala__dida { bottom: calc(var(--gutter) + 0.75rem); max-width: 34vw; }
+    .sala__titolo { font-size: 1.5rem; }
+    .sala__azioni { left: auto; right: var(--gutter); bottom: calc(var(--gutter) + 0.5rem); justify-content: flex-end; }
+    /* anche sotto i 700 px di larghezza: il nome torna su una riga */
+    .sala__nome { flex-direction: row; gap: 0.18em; line-height: 0.8; }
+    .sala__nome .sala__parola:first-child, .sala__nome .sala__parola:nth-child(2) { align-self: center; margin-bottom: 0; }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     :global(.js) .sala { height: auto; }
     .sala__scorri, .sala__barra { display: none; }

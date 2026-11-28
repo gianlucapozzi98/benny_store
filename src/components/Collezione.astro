@@ -66,7 +66,7 @@ const conta = (c: Categoria) => opere.filter((o) => o.categoria === c).length;
   .pezzo__link:hover .pezzo__regalo, .pezzo__link:focus-visible .pezzo__regalo { transform: rotate(-4deg); opacity: 1; }
   :global(.natale) .filtro[aria-pressed='true'] { background: var(--natale-rosso); border-color: var(--natale-rosso); color: var(--avorio); }
   .collezione__testa h2 { grid-column: 1 / span 8; }
-  .collezione__tot { font-family: var(--font); font-style: normal; font-size: 0.16em; font-weight: 600; letter-spacing: 0.1em; vertical-align: top; margin-left: 0.5em; }
+  .collezione__tot { font-family: var(--font); font-style: normal; font-size: max(0.75rem, 0.16em); font-weight: 600; letter-spacing: 0.1em; vertical-align: top; margin-left: 0.5em; }
   .collezione__intro { grid-column: 9 / span 4; align-self: end; max-width: 34ch; color: var(--grafite); }
 
   .filtri {
